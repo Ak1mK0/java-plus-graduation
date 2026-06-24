@@ -24,9 +24,10 @@
 	</properties>
 
 	<modules>
-		<module>main-service</module>
+		<module>core</module>
 		<module>stat</module>
-	</modules>
+		<!--        <module>infra</module>-->
+    </modules>
 
 	<build>
 		<pluginManagement>
