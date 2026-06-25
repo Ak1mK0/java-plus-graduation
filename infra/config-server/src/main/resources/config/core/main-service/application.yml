@@ -1,0 +1,35 @@
+server:
+  port: 0
+
+spring:
+  application:
+    name: main-service
+  datasource:
+    url: jdbc:postgresql://localhost:5433/ewm-main
+    username: main
+    password: main
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+      format_sql: false
+  cloud:
+    config:
+      enabled: false
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${random.int(10000,99999)}
+    lease-renewal-interval-in-seconds: 10
+    lease-expiration-duration-in-seconds: 30
+
+logging:
+  level:
+    ru.yandex.practicum: DEBUG
+
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level --- [%thread] %logger{36} : %msg%n"

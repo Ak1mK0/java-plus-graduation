@@ -22,7 +22,7 @@ import java.util.List;
 public class StatsClient {
     private final RestClient restClient;
 
-    public StatsClient(@Value("${client.url}") String serverUrl) {
+    public StatsClient(@Value("http://localhost:9090") String serverUrl) {
         ClientHttpRequestFactorySettings settings = ClientHttpRequestFactorySettings.DEFAULTS
                 .withConnectTimeout(Duration.ofSeconds(5))
                 .withReadTimeout(Duration.ofSeconds(10));
