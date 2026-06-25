@@ -5,19 +5,12 @@ spring:
         locator:
           enabled: true
       routes:
-        - id: delivery_actuator_route
-          uri: lb://warehouse
+        - id: admin_user_route
+          uri: lb://main-service
           predicates:
-            - Path=/delivery/actuator/**
-          filters:
-            - StripPrefix=1
-
-        - id: delivery_service_route
-          uri: lb://delivery
-          predicates:
-            - Path=/delivery/**
-          filters:
-            - PrefixPath=/api/v1
+            - Path=/admin/**, /users/**, /events/**, /compilations/**, /categories/**, /private/**, /public/**
+#          filters:
+#            - PrefixPath=/api/v1
 
 server:
   port: 8080
