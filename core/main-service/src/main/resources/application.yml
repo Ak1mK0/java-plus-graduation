@@ -5,14 +5,15 @@ spring:
   application:
     name: main-service
   config:
-    import: "configserver:http://localhost:8888"  # ← явно указать URL
+    import: "configserver:"
   cloud:
     config:
-      enabled: true
-      uri: http://localhost:8888  # ← явный URL
       discovery:
-        enabled: false  # ← отключить discovery через Eureka
-      fail-fast: true
+        enabled: true
+        serviceId: config-server
+      retry:
+        useRandomPolicy: true
+        max-interval: 6000
 
 eureka:
   client:
@@ -21,5 +22,6 @@ eureka:
     instance:
       prefer-ip-address: true
       instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
+      hostname: localhost
       lease-renewal-interval-in-seconds: 10
       lease-expiration-duration-in-seconds: 30
