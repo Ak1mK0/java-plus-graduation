@@ -17,8 +17,9 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
   instance:
+    non-secure-port: ${server.port}
     prefer-ip-address: true
-    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
+    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${random.int(10000,99999)}
     hostname: localhost
     lease-renewal-interval-in-seconds: 10
     lease-expiration-duration-in-seconds: 30

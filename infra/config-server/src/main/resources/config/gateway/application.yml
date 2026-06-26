@@ -1,3 +1,6 @@
+server:
+  port: 8080
+
 spring:
   cloud:
     gateway:
@@ -9,11 +12,18 @@ spring:
           uri: lb://main-service
           predicates:
             - Path=/admin/**, /users/**, /events/**, /compilations/**, /categories/**, /private/**, /public/**
-#          filters:
-#            - PrefixPath=/api/v1
 
-server:
-  port: 8080
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    non-secure-port: ${server.port}
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${random.int(10000,99999)}
+    hostname: localhost
+    lease-renewal-interval-in-seconds: 10
+    lease-expiration-duration-in-seconds: 30
 
 management:
   endpoints:
@@ -23,11 +33,6 @@ management:
   endpoint:
     gateway:
       enabled: true
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
 
 logging:
   level:
