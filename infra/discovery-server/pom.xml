@@ -34,7 +34,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>ru.yandex.DiscoveryApp</mainClass>
+                    <mainClass>ru.practicum.DiscoveryApp</mainClass>
                 </configuration>
                 <executions>
                     <execution>
