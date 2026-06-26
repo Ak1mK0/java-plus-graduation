@@ -8,6 +8,12 @@ spring:
     active: native
   cloud:
     config:
+      fail-fast: true
+      retry:
+        useRandomPolicy: true
+      discovery:
+        enabled: true
+        serviceId: config-server
       server:
         native:
           searchLocations:

@@ -8,6 +8,7 @@ spring:
     import: "configserver:"
   cloud:
     config:
+      fail-fast: true
       discovery:
         enabled: true
         serviceId: config-server
