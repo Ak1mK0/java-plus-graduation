@@ -1,28 +1,36 @@
 server:
-    port: 0
+  port: 0
 
 spring:
-    application:
-        name: stats-server
+  application:
+    name: stats-server
+  config:
+    import: "configserver:"
+  cloud:
     config:
-        import: "configserver:"
-    cloud:
-        config:
-            fail-fast: true
-            discovery:
-                enabled: true
-                serviceId: config-server
-            retry:
-                useRandomPolicy: true
-                max-interval: 6000
+      fail-fast: true
+      discovery:
+        enabled: true
+        serviceId: config-server
+      retry:
+        useRandomPolicy: true
+        max-interval: 6000
+    h2:
+      console:
+        enabled: true
+        path: /h2-console
+    settings:
+      web-allow-others: true
+    sql:
+      init:
+        mode: always
 
 eureka:
-    client:
-        serviceUrl:
-            defaultZone: http://${eureka.instance.hostname:localhost}:${eureka.instance.port:8761}/eureka/
-        instance:
-            prefer-ip-address: true
-            instance-id: ${spring.application.name}:${server.port}
-            hostname: localhost
-            lease-renewal-interval-in-seconds: 10
-            lease-expiration-duration-in-seconds: 30
+  client:
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname:localhost}:${eureka.instance.port:8761}/eureka/
+  instance:
+    preferIpAddress: true
+    hostname: localhost
+    instance-id: ${spring.application.name}:${random.value}
+    leaseRenewalIntervalInSeconds: 10

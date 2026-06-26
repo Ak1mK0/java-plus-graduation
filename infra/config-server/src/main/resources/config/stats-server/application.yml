@@ -3,15 +3,16 @@ server:
 
 spring:
   application:
-    name: stat-server
+    name: stats-server
   datasource:
-    url: jdbc:postgresql://localhost:5432/ewm-stat
+    url: jdbc:postgresql://stat-server-db:5432/ewm-stat
     username: stat
     password: stat
     driver-class-name: org.postgresql.Driver
   jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: false
@@ -20,13 +21,8 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
-  instance:
-    non-secure-port: ${server.port}
-    prefer-ip-address: true
-    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${random.int(10000,99999)}
-    hostname: localhost
-    lease-renewal-interval-in-seconds: 10
-    lease-expiration-duration-in-seconds: 30
+    fetch-registry: true
+    register-with-eureka: true
 
 management:
   endpoints:
