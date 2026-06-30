@@ -1,0 +1,28 @@
+package ru.practicum.faign;
+
+import jakarta.validation.Valid;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import ru.practicum.dto.userDto.NewUserRequest;
+import ru.practicum.dto.userDto.UserDto;
+
+import java.util.List;
+
+@FeignClient(name = "user-service", path = "/admin/users")
+public interface UserServiceFeign {
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    UserDto saveUser(@Valid @RequestBody NewUserRequest request);
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserDto> getUsers(@RequestParam(name = "ids", required = false) List<Long> ids,
+                                  @RequestParam(name = "from", defaultValue = "0") Long from,
+                                  @RequestParam(name = "size", defaultValue = "10") Long size);
+
+    @DeleteMapping("/{userId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void deleteUser(@PathVariable("userId") Integer userId);
+}

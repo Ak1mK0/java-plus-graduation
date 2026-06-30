@@ -1,4 +1,21 @@
 services:
+  user-service_db:
+    image: postgres:16.1
+    container_name: user-service_db
+    volumes:
+      - ./core/user-service/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+    ports:
+      - "5440:5432"
+    environment:
+      - POSTGRES_DB=user-service
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=user
+    healthcheck:
+      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
+      timeout: 5s
+      interval: 5s
+      retries: 10
+
   ewm-main-db:
     image: postgres:16.1
     container_name: ewm-main-db
