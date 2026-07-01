@@ -18,11 +18,19 @@ public interface UserServiceFeign {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDto> getUsers(@RequestParam(name = "ids", required = false) List<Long> ids,
-                                  @RequestParam(name = "from", defaultValue = "0") Long from,
-                                  @RequestParam(name = "size", defaultValue = "10") Long size);
+    List<UserDto> getUsers(@RequestParam(name = "ids", required = false) List<Long> ids,
+                           @RequestParam(name = "from", defaultValue = "0") Long from,
+                           @RequestParam(name = "size", defaultValue = "10") Long size);
+
+    @GetMapping("/allUsersById")
+    @ResponseStatus(HttpStatus.OK)
+    List<UserDto> getAllUsersById(@RequestParam(name = "ids", required = false) List<Long> ids);
+
+    @GetMapping("/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    UserDto getUser(@PathVariable("userId") Long userId);
 
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    void deleteUser(@PathVariable("userId") Integer userId);
+    void deleteUser(@PathVariable("userId") Long userId);
 }

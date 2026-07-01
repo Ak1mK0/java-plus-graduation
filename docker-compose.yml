@@ -16,9 +16,9 @@ services:
       interval: 5s
       retries: 10
 
-  ewm-main-db:
+  ewm-main_db:
     image: postgres:16.1
-    container_name: ewm-main-db
+    container_name: ewm-main_db
     volumes:
       - ./core/main-service/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
     ports:

@@ -2,27 +2,28 @@ package ru.practicum.main.service.event.mapper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import ru.practicum.dto.userDto.UserDto;
+import ru.practicum.dto.userDto.UserShortDto;
 import ru.practicum.main.service.category.mapper.CategoryMapper;
 import ru.practicum.main.service.category.model.Category;
 import ru.practicum.main.service.event.dto.*;
 import ru.practicum.main.service.event.model.Event;
 import ru.practicum.main.service.event.model.EventState;
-import ru.practicum.main.service.user.mapper.UserMapper;
-import ru.practicum.main.service.user.model.User;
+
 
 import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class EventMapper {
 
-    public static Event toEvent(NewEventDto dto, Category category, User initiator) {
+    public static Event toEvent(NewEventDto dto, Category category, UserDto initiator) {
         Event event = Event.builder()
                 .annotation(dto.getAnnotation())
                 .category(category)
                 .createdOn(LocalDateTime.now())
                 .description(dto.getDescription())
                 .eventDate(dto.getEventDate())
-                .initiator(initiator)
+                .initiatorId(initiator.getId())
                 .paid(dto.getPaid())
                 .participantLimit(dto.getParticipantLimit())
                 .requestModeration(dto.getRequestModeration())
@@ -38,7 +39,7 @@ public class EventMapper {
         return event;
     }
 
-    public static EventFullDto toFullDto(Event event, Long confirmedRequests, Long views) {
+    public static EventFullDto toFullDto(Event event, Long confirmedRequests, Long views, UserShortDto initiator) {
         EventFullDto dto = EventFullDto.builder()
                 .id(event.getId())
                 .annotation(event.getAnnotation())
@@ -47,7 +48,7 @@ public class EventMapper {
                 .createdOn(event.getCreatedOn())
                 .description(event.getDescription())
                 .eventDate(event.getEventDate())
-                .initiator(UserMapper.toShortDto(event.getInitiator()))
+                .initiator(initiator)
                 .paid(event.getPaid())
                 .participantLimit(event.getParticipantLimit())
                 .publishedOn(event.getPublishedOn())
@@ -64,65 +65,31 @@ public class EventMapper {
         return dto;
     }
 
-    public static EventShortDto toShortDto(Event event, Long confirmedRequests, Long views) {
+    public static EventShortDto toShortDto(Event event, Long confirmedRequests, Long views, UserShortDto initiator) {
         return EventShortDto.builder()
                 .id(event.getId())
                 .annotation(event.getAnnotation())
                 .category(CategoryMapper.toDto(event.getCategory()))
                 .confirmedRequests(confirmedRequests)
                 .eventDate(event.getEventDate())
-                .initiator(UserMapper.toShortDto(event.getInitiator()))
+                .initiator(initiator)
                 .paid(event.getPaid())
                 .title(event.getTitle())
                 .views(views)
                 .build();
     }
 
-    public static EventShortDto toShortDto(Event event) {
+    public static EventShortDto toShortDto(Event event, UserShortDto initiator) {
         return EventShortDto.builder()
                 .id(event.getId())
                 .annotation(event.getAnnotation())
                 .category(CategoryMapper.toDto(event.getCategory()))
                 .confirmedRequests(0L)
                 .eventDate(event.getEventDate())
-                .initiator(UserMapper.toShortDto(event.getInitiator()))
+                .initiator(initiator)
                 .paid(event.getPaid())
                 .title(event.getTitle())
                 .views(0L)
                 .build();
-    }
-
-    public static void updateEventFromUserRequest(Event event, UpdateEventUserRequest dto, Category category) {
-        if (dto.getAnnotation() != null) event.setAnnotation(dto.getAnnotation());
-        if (category != null) event.setCategory(category);
-        if (dto.getDescription() != null) event.setDescription(dto.getDescription());
-        if (dto.getEventDate() != null) event.setEventDate(dto.getEventDate());
-        if (dto.getLocation() != null) {
-            if (event.getLocation() == null) event.setLocation(new ru.practicum.main.service.event.model.Location());
-            event.getLocation().setLat(dto.getLocation().getLat());
-            event.getLocation().setLon(dto.getLocation().getLon());
-        }
-        if (dto.getPaid() != null) event.setPaid(dto.getPaid());
-        if (dto.getParticipantLimit() != null) event.setParticipantLimit(dto.getParticipantLimit());
-        if (dto.getRequestModeration() != null) event.setRequestModeration(dto.getRequestModeration());
-        if (dto.getTitle() != null) event.setTitle(dto.getTitle());
-        // stateAction обрабатывается отдельно в сервисе
-    }
-
-    public static void updateEventFromAdminRequest(Event event, UpdateEventAdminRequest dto, Category category) {
-        if (dto.getAnnotation() != null) event.setAnnotation(dto.getAnnotation());
-        if (category != null) event.setCategory(category);
-        if (dto.getDescription() != null) event.setDescription(dto.getDescription());
-        if (dto.getEventDate() != null) event.setEventDate(dto.getEventDate());
-        if (dto.getLocation() != null) {
-            if (event.getLocation() == null) event.setLocation(new ru.practicum.main.service.event.model.Location());
-            event.getLocation().setLat(dto.getLocation().getLat());
-            event.getLocation().setLon(dto.getLocation().getLon());
-        }
-        if (dto.getPaid() != null) event.setPaid(dto.getPaid());
-        if (dto.getParticipantLimit() != null) event.setParticipantLimit(dto.getParticipantLimit());
-        if (dto.getRequestModeration() != null) event.setRequestModeration(dto.getRequestModeration());
-        if (dto.getTitle() != null) event.setTitle(dto.getTitle());
-        // stateAction обрабатывается отдельно
     }
 }

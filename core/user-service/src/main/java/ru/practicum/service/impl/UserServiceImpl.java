@@ -4,10 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import ru.practicum.dto.userDto.NewUserRequest;
-import ru.practicum.dto.userDto.UserDto;
 import ru.practicum.exception.AlreadyExistsException;
+import ru.practicum.exception.NotFoundException;
 import ru.practicum.mapper.UserMapper;
 import ru.practicum.model.User;
 import ru.practicum.repository.UserRepository;
@@ -23,38 +22,40 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public UserDto saveUser(NewUserRequest request) {
+    public User saveUser(NewUserRequest request) {
         log.info("Создание нового пользователя: {}", request);
         userEmailCheck(request);
         User user = UserMapper.toEntity(request);
         user = userRepository.save(user);
         log.info("Создан пользователь с id={}", user.getId());
-        return UserMapper.toDto(user);
+        return user;
     }
 
-    public List<UserDto> getUsers(List<Long> ids, Long from, Long size) {
+    public List<User> getUsers(List<Long> ids, Long from, Long size) {
         if (ids != null) {
             log.info("Получение списка пользователей с ids: {}", ids);
-            List<UserDto> users = userRepository.getUsers(ids).stream()
-                    .map(UserMapper::toDto)
-                    .toList();
+            List<User> users = userRepository.getUsers(ids);
             log.info("Список по ids: {}", users);
             return users;
-
         } else {
             log.info("Получение списка из первых {} пользователей с позиции {}: ", size, from);
-            List<UserDto> users = userRepository.getUsers(from, size).stream()
-                    .map(UserMapper::toDto)
-                    .toList();
-            log.info("Список подряд: {}", users);
-            return users;
+            return userRepository.getUsers(from, size);
         }
     }
 
-    @Transactional
-    public void deleteUser(Integer id) {
-        log.info("Удаление пользователя с ID: {}", id);
+    public List<User> getAllUsersById(List<Long> ids) {
+        return userRepository.findAllById(ids);
+    }
 
+    public User getUser(Long userId) {
+        log.info("Получение пользователя с id: {}", userId);
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("Пользователь с id: " + userId + " не существует"));
+    }
+
+    @Transactional
+    public void deleteUser(Long id) {
+        log.info("Удаление пользователя с ID: {}", id);
         userRepository.deleteById(id);
     }
 

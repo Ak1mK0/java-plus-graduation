@@ -5,9 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.dto.userDto.UserShortDto;
 import ru.practicum.main.service.category.dto.CategoryDto;
 import ru.practicum.main.service.event.model.EventState;
-import ru.practicum.main.service.user.dto.UserShortDto;
 
 import java.time.LocalDateTime;
 
@@ -50,5 +50,5 @@ public class EventFullDto {
 
     private String title;
 
-    private Long views; // количество просмотров
+    private Long views;
 }

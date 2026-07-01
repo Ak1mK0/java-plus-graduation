@@ -14,7 +14,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     // Для админа: поиск с фильтрацией
     @Query("SELECT e FROM Event e WHERE " +
-            "(coalesce(:users, null) IS NULL OR e.initiator.id IN :users) AND " +
+            "(coalesce(:users, null) IS NULL OR e.initiatorId IN :users) AND " +
             "(coalesce(:states, null) IS NULL OR e.state IN :states) AND " +
             "(coalesce(:categories, null) IS NULL OR e.category.id IN :categories) AND " +
             "(coalesce(:rangeStart, null) IS NULL OR e.eventDate >= :rangeStart) AND " +

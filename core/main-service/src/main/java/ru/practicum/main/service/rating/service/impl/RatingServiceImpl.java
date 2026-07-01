@@ -7,10 +7,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.dto.userDto.UserDto;
+import ru.practicum.exception.ConditionsNotMetException;
+import ru.practicum.exception.NotFoundException;
+import ru.practicum.faign.UserServiceFeign;
 import ru.practicum.main.service.event.model.Event;
 import ru.practicum.main.service.event.repository.EventRepository;
-import ru.practicum.main.service.exception.ConditionsNotMetException;
-import ru.practicum.main.service.exception.NotFoundException;
 import ru.practicum.main.service.rating.dto.*;
 import ru.practicum.main.service.rating.mapper.RatingMapper;
 import ru.practicum.main.service.rating.model.EventRating;
@@ -18,8 +20,6 @@ import ru.practicum.main.service.rating.repository.EventRatingRepository;
 import ru.practicum.main.service.rating.service.RatingService;
 import ru.practicum.main.service.request.model.RequestStatus;
 import ru.practicum.main.service.request.repository.RequestRepository;
-import ru.practicum.main.service.user.model.User;
-import ru.practicum.main.service.user.repository.UserRepository;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class RatingServiceImpl implements RatingService {
 
     private final EventRatingRepository ratingRepository;
     private final EventRepository eventRepository;
-    private final UserRepository userRepository;
+    private final UserServiceFeign userServiceFeign;
     private final RequestRepository requestRepository;
 
     @Override
@@ -52,8 +52,7 @@ public class RatingServiceImpl implements RatingService {
                                              EventRating.RatingType type) {
         log.info("Добавление оценки {} для события id={} пользователем id={}", type, eventId, userId);
 
-        User user = userRepository.findById(userId.intValue())
-                .orElseThrow(() -> new NotFoundException("Пользователь с id=" + userId + " не найден"));
+        UserDto user = userServiceFeign.getUser(userId);
 
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Событие с id=" + eventId + " не найдено"));
@@ -63,8 +62,8 @@ public class RatingServiceImpl implements RatingService {
         }
 
         boolean userAttended = requestRepository.existsByEventIdAndRequesterIdAndStatus(
-                eventId.intValue(),
-                userId.intValue(),
+                eventId,
+                userId,
                 RequestStatus.CONFIRMED);
 
         if (!userAttended) {
@@ -129,9 +128,7 @@ public class RatingServiceImpl implements RatingService {
     public EventRatingListDto getUserRatings(Long userId, String rating, int from, int size) {
         log.info("Получение оценок пользователя id={}, rating={}, from={}, size={}", userId, rating, from, size);
 
-        if (!userRepository.existsById(userId.intValue())) {  // <--- ИСПРАВЛЕНО
-            throw new NotFoundException("Пользователь с id=" + userId + " не найден");
-        }
+        userServiceFeign.getUser(userId);
 
         Pageable pageable = PageRequest.of(from / size, size);
         List<EventRating> ratings;

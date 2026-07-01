@@ -2,11 +2,11 @@ package ru.practicum.main.service.request.mapper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import ru.practicum.dto.userDto.UserDto;
 import ru.practicum.main.service.event.model.Event;
 import ru.practicum.main.service.request.dto.ParticipationRequestDto;
 import ru.practicum.main.service.request.model.ParticipationRequest;
 import ru.practicum.main.service.request.model.RequestStatus;
-import ru.practicum.main.service.user.model.User;
 
 import java.time.LocalDateTime;
 
@@ -19,17 +19,17 @@ public class RequestMapper {
         return ParticipationRequestDto.builder()
                 .id(request.getId())
                 .created(request.getCreated())
-                .event(request.getEvent().getId().intValue())
-                .requester(request.getRequester().getId().intValue())
+                .event(request.getEvent().getId())
+                .requester(request.getRequesterId())
                 .status(request.getStatus())
                 .build();
     }
 
-    public static ParticipationRequest toNewRequest(Event event, User requester) {
+    public static ParticipationRequest toNewRequest(Event event, Long userId) {
         return ParticipationRequest.builder()
                 .created(LocalDateTime.now())
                 .event(event)
-                .requester(requester)
+                .requesterId(userId)
                 .status(RequestStatus.PENDING)
                 .build();
     }

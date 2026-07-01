@@ -3,7 +3,6 @@ package ru.practicum.main.service.event.model;
 import jakarta.persistence.*;
 import lombok.*;
 import ru.practicum.main.service.category.model.Category;
-import ru.practicum.main.service.user.model.User;
 
 import java.time.LocalDateTime;
 
@@ -37,9 +36,8 @@ public class Event {
     @Column(name = "event_date", nullable = false)
     private LocalDateTime eventDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "initiator_id", nullable = false)
-    private User initiator;
+    @Column(name = "initiator_id", nullable = false)
+    private Long initiatorId;
 
     @Embedded
     @AttributeOverrides({

@@ -7,12 +7,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.dto.userDto.UserShortDto;
 import ru.practicum.main.service.event.dto.EventFullDto;
 import ru.practicum.main.service.event.dto.EventShortDto;
-import ru.practicum.main.service.event.service.EventService;
+import ru.practicum.main.service.event.mapper.EventMapper;
+import ru.practicum.main.service.event.model.Event;
+import ru.practicum.main.service.event.service.PublicEventService;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/events")
@@ -21,7 +26,7 @@ import java.util.List;
 @Slf4j
 public class PublicEventController {
 
-    private final EventService eventService;
+    private final PublicEventService publicEventService;
 
     @GetMapping
     public List<EventShortDto> getEvents(@RequestParam(required = false) String text,
@@ -35,13 +40,43 @@ public class PublicEventController {
                                          @RequestParam(defaultValue = "10") int size,
                                          HttpServletRequest request) {
         log.info("GET /events - публичный поиск событий");
-        return eventService.getPublicEvents(text, categories, paid, rangeStart,
+
+        List<Event> events = publicEventService.getPublicEvents(text, categories, paid, rangeStart,
                 rangeEnd, onlyAvailable, sort, from, size, request);
+
+        if (events.isEmpty()) {
+            return List.of();
+        }
+
+        Map<Long, Long> confirmedMap = publicEventService.getConfirmedRequestsCounts(
+                events.stream().map(Event::getId).toList()
+        );
+
+        Map<Long, Long> viewsMap = publicEventService.getViewsForEvents(events);
+
+        Map<Long, UserShortDto> initiatorMap = publicEventService.getEventInitiators(events);
+
+        return events.stream()
+                .map(event -> {
+                    Long confirmedRequests = confirmedMap.getOrDefault(event.getId(), 0L);
+                    Long views = viewsMap.getOrDefault(event.getId(), 0L);
+                    UserShortDto initiator = initiatorMap.get(event.getInitiatorId());
+
+                    return EventMapper.toShortDto(event, confirmedRequests, views, initiator);
+                })
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
     public EventFullDto getEventById(@PathVariable @Positive Long id, HttpServletRequest request) {
         log.info("GET /events/{} - получение события", id);
-        return eventService.getPublicEventById(id, request);
+
+        Event event = publicEventService.getPublicEventById(id, request);
+
+        Long confirmedRequests = publicEventService.getConfirmedRequestsCount(id);
+        Long views = publicEventService.getViewsForEvent(event);
+        UserShortDto initiator = publicEventService.getEventInitiator(event);
+
+        return EventMapper.toFullDto(event, confirmedRequests, views, initiator);
     }
 }

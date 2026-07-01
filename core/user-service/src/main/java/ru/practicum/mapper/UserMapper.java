@@ -21,6 +21,6 @@ public class UserMapper {
 
     public static UserShortDto toShortDto(User user) {
         if (user == null) return null;
-        return new UserShortDto(user.getId().longValue(), user.getName());
+        return new UserShortDto(user.getId(), user.getName());
     }
 }

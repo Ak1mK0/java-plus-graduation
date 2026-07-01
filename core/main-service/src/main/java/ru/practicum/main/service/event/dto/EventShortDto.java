@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.dto.userDto.UserShortDto;
 import ru.practicum.main.service.category.dto.CategoryDto;
-import ru.practicum.main.service.user.dto.UserShortDto;
 
 import java.time.LocalDateTime;
 

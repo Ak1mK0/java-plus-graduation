@@ -10,34 +10,71 @@ spring:
         locator:
           enabled: true
       routes:
-        - id: admin_route
+
+        - id: user-service-admin
+          uri: lb://user-service
+          predicates:
+            - Path=/admin/users/**
+
+
+        - id: category-service-admin
           uri: lb://main-service
           predicates:
-            - Path=/admin/**
-        - id: users_route
-          uri: lb://main-service
-          predicates:
-            - Path=/users/**
-        - id: events_route
-          uri: lb://main-service
-          predicates:
-            - Path=/events/**
-        - id: compilations_route
-          uri: lb://main-service
-          predicates:
-            - Path=/compilations/**
-        - id: categories_route
+            - Path=/admin/categories/**
+
+        - id: category-service-public
           uri: lb://main-service
           predicates:
             - Path=/categories/**
-        - id: private_route
+
+
+        - id: compilation-service-admin
           uri: lb://main-service
           predicates:
-            - Path=/private/**
-        - id: public_route
+            - Path=/admin/compilations/**
+
+        - id: compilation-service-public
           uri: lb://main-service
           predicates:
-            - Path=/public/**
+            - Path=/compilations/**
+
+
+        - id: event-service-admin
+          uri: lb://main-service
+          predicates:
+            - Path=/admin/events/**
+
+        - id: event-service-public
+          uri: lb://main-service
+          predicates:
+            - Path=/events/**
+
+        - id: event-service-private
+          uri: lb://main-service
+          predicates:
+            - Path=/users/*/events/**
+
+
+        - id: request-service-private-requests
+          uri: lb://main-service
+          predicates:
+            - Path=/users/*/requests/**
+
+        - id: request-service-private-events
+          uri: lb://main-service
+          predicates:
+            - Path=/users/*/events/*/requests/**
+
+
+        - id: rating-service-private
+          uri: lb://main-service
+          predicates:
+            - Path=/private/events/**
+
+        - id: rating-service-public
+          uri: lb://main-service
+          predicates:
+            - Path=/public/events/**
 
 eureka:
   client:
