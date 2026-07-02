@@ -41,12 +41,3 @@ CREATE TABLE IF NOT EXISTS compilation_events (
     event_id BIGINT NOT NULL REFERENCES events(id) ON DELETE CASCADE,
     PRIMARY KEY (compilation_id, event_id)
 );
-
-CREATE TABLE IF NOT EXISTS event_ratings (
-    id BIGSERIAL PRIMARY KEY,
-    event_id BIGINT NOT NULL REFERENCES events(id) ON DELETE CASCADE,
-    user_id BIGINT NOT NULL,
-    rating_type VARCHAR(10) NOT NULL CHECK (rating_type IN ('LIKE', 'DISLIKE')),
-    created TIMESTAMP NOT NULL DEFAULT NOW(),
-    UNIQUE(event_id, user_id)
-);

@@ -11,7 +11,7 @@ import ru.practicum.main.service.compilation.model.Compilation;
 import ru.practicum.main.service.compilation.repository.CompilationRepository;
 import ru.practicum.main.service.compilation.service.PublicCompilationService;
 import ru.practicum.main.service.event.model.Event;
-import ru.practicum.main.service.request.model.RequestStatus;
+import ru.practicum.dto.requestDto.RequestStatus;
 import ru.practicum.main.service.request.repository.RequestRepository;
 import ru.practicum.stat.client.StatsClient;
 import ru.practicum.stat.dto.ViewStatsDto;

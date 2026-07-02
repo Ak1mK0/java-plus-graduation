@@ -2,13 +2,16 @@ package ru.practicum.main.service.event.mapper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import ru.practicum.dto.eventDto.EventFullDto;
+import ru.practicum.dto.eventDto.EventShortDto;
+import ru.practicum.dto.eventDto.LocationDto;
+import ru.practicum.dto.eventDto.NewEventDto;
 import ru.practicum.dto.userDto.UserDto;
 import ru.practicum.dto.userDto.UserShortDto;
 import ru.practicum.main.service.category.mapper.CategoryMapper;
 import ru.practicum.main.service.category.model.Category;
-import ru.practicum.main.service.event.dto.*;
 import ru.practicum.main.service.event.model.Event;
-import ru.practicum.main.service.event.model.EventState;
+import ru.practicum.dto.eventDto.EventState;
 
 
 import java.time.LocalDateTime;

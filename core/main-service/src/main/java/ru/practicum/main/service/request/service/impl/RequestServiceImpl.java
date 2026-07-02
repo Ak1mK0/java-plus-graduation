@@ -10,13 +10,13 @@ import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.faign.UserServiceFeign;
 import ru.practicum.main.service.event.model.Event;
-import ru.practicum.main.service.event.model.EventState;
+import ru.practicum.dto.eventDto.EventState;
 import ru.practicum.main.service.event.repository.EventRepository;
-import ru.practicum.main.service.request.dto.EventRequestStatusUpdateRequest;
-import ru.practicum.main.service.request.dto.EventRequestStatusUpdateResult;
+import ru.practicum.dto.requestDto.EventRequestStatusUpdateRequest;
+import ru.practicum.dto.requestDto.EventRequestStatusUpdateResult;
 import ru.practicum.main.service.request.mapper.RequestMapper;
 import ru.practicum.main.service.request.model.ParticipationRequest;
-import ru.practicum.main.service.request.model.RequestStatus;
+import ru.practicum.dto.requestDto.RequestStatus;
 import ru.practicum.main.service.request.repository.RequestRepository;
 import ru.practicum.main.service.request.service.RequestService;
 
@@ -188,5 +188,9 @@ public class RequestServiceImpl implements RequestService {
                 .confirmedRequests(confirmed.stream().map(RequestMapper::toDto).collect(Collectors.toList()))
                 .rejectedRequests(rejected.stream().map(RequestMapper::toDto).collect(Collectors.toList()))
                 .build();
+    }
+
+    public boolean confirmUserRegisterOnEvent(Long userId, Long eventId, RequestStatus requestStatus) {
+        return requestRepository.existsByEventIdAndRequesterIdAndStatus(userId, eventId, requestStatus);
     }
 }

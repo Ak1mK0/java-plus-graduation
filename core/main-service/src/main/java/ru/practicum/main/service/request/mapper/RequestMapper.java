@@ -2,11 +2,10 @@ package ru.practicum.main.service.request.mapper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import ru.practicum.dto.userDto.UserDto;
 import ru.practicum.main.service.event.model.Event;
-import ru.practicum.main.service.request.dto.ParticipationRequestDto;
+import ru.practicum.dto.requestDto.ParticipationRequestDto;
 import ru.practicum.main.service.request.model.ParticipationRequest;
-import ru.practicum.main.service.request.model.RequestStatus;
+import ru.practicum.dto.requestDto.RequestStatus;
 
 import java.time.LocalDateTime;
 

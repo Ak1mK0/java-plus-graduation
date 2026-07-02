@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.exception.AlreadyExistsException;
 import ru.practicum.exception.ConditionsNotMetException;
 import ru.practicum.exception.NotFoundException;
-import ru.practicum.main.service.category.dto.CategoryDto;
+import ru.practicum.dto.categoryDto.CategoryDto;
 import ru.practicum.main.service.category.mapper.CategoryMapper;
 import ru.practicum.main.service.category.model.Category;
 import ru.practicum.main.service.category.repository.CategoryRepository;

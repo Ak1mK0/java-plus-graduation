@@ -13,10 +13,10 @@ import ru.practicum.dto.userDto.UserShortDto;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.faign.UserServiceFeign;
 import ru.practicum.main.service.event.model.Event;
-import ru.practicum.main.service.event.model.EventState;
+import ru.practicum.dto.eventDto.EventState;
 import ru.practicum.main.service.event.repository.EventRepository;
 import ru.practicum.main.service.event.service.PublicEventService;
-import ru.practicum.main.service.request.model.RequestStatus;
+import ru.practicum.dto.requestDto.RequestStatus;
 import ru.practicum.main.service.request.repository.RequestRepository;
 import ru.practicum.stat.client.StatsClient;
 import ru.practicum.stat.dto.EndpointHitDto;
@@ -67,7 +67,9 @@ public class PublicEventServiceImpl implements PublicEventService {
         log.info("Публичное получение события {}", eventId);
 
         Event event = findPublishedEventById(eventId);
-        saveHit(request);
+        if (request != null) {
+            saveHit(request);
+        }
 
         return event;
     }

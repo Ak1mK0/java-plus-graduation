@@ -10,22 +10,21 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.userDto.UserDto;
 import ru.practicum.dto.userDto.UserShortDto;
 import ru.practicum.faign.UserServiceFeign;
-import ru.practicum.main.service.event.dto.EventFullDto;
-import ru.practicum.main.service.event.dto.EventShortDto;
-import ru.practicum.main.service.event.dto.NewEventDto;
-import ru.practicum.main.service.event.dto.UpdateEventUserRequest;
+import ru.practicum.dto.eventDto.EventFullDto;
+import ru.practicum.dto.eventDto.EventShortDto;
+import ru.practicum.dto.eventDto.NewEventDto;
+import ru.practicum.dto.eventDto.UpdateEventUserRequest;
 import ru.practicum.main.service.event.mapper.EventMapper;
 import ru.practicum.main.service.event.model.Event;
 import ru.practicum.main.service.event.service.PrivateEventService;
-import ru.practicum.main.service.request.dto.EventRequestStatusUpdateRequest;
-import ru.practicum.main.service.request.dto.EventRequestStatusUpdateResult;
-import ru.practicum.main.service.request.dto.ParticipationRequestDto;
+import ru.practicum.dto.requestDto.EventRequestStatusUpdateRequest;
+import ru.practicum.dto.requestDto.EventRequestStatusUpdateResult;
+import ru.practicum.dto.requestDto.ParticipationRequestDto;
 import ru.practicum.main.service.request.mapper.RequestMapper;
 import ru.practicum.main.service.request.service.RequestService;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RestController

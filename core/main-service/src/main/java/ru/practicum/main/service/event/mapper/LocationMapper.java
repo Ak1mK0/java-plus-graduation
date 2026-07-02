@@ -2,7 +2,7 @@ package ru.practicum.main.service.event.mapper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import ru.practicum.main.service.event.dto.LocationDto;
+import ru.practicum.dto.eventDto.LocationDto;
 import ru.practicum.main.service.event.model.Location;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

@@ -6,11 +6,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.main.service.request.dto.EventRequestStatusUpdateRequest;
-import ru.practicum.main.service.request.dto.EventRequestStatusUpdateResult;
-import ru.practicum.main.service.request.dto.ParticipationRequestDto;
+import ru.practicum.dto.requestDto.EventRequestStatusUpdateRequest;
+import ru.practicum.dto.requestDto.EventRequestStatusUpdateResult;
+import ru.practicum.dto.requestDto.ParticipationRequestDto;
 import ru.practicum.main.service.request.mapper.RequestMapper;
 import ru.practicum.main.service.request.model.ParticipationRequest;
+import ru.practicum.dto.requestDto.RequestStatus;
 import ru.practicum.main.service.request.service.RequestService;
 
 import java.util.List;
@@ -66,5 +67,13 @@ public class PrivateRequestController {
                                                                     @RequestBody EventRequestStatusUpdateRequest updateRequest) {
         log.info("PATCH /users/{}/events/{}/requests с телом: {}", userId, eventId, updateRequest);
         return requestService.updateEventRequestsStatus(userId, eventId, updateRequest);
+    }
+
+    @GetMapping("/{eventId}")
+    public boolean confirmUserRegisterOnEvent(@PathVariable @Positive Long userId,
+                                              @PathVariable @Positive Long eventId,
+                                              @RequestParam RequestStatus requestStatus) {
+        log.info("GET /users/{}/events/{}?RequestStatus={}", userId, eventId, requestStatus);
+        return requestService.confirmUserRegisterOnEvent(userId, eventId, requestStatus);
     }
 }

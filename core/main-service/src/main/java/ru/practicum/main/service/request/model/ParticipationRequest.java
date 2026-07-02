@@ -2,6 +2,7 @@ package ru.practicum.main.service.request.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import ru.practicum.dto.requestDto.RequestStatus;
 import ru.practicum.main.service.event.model.Event;
 
 import java.time.LocalDateTime;

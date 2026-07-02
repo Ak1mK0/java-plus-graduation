@@ -16,6 +16,23 @@ services:
       interval: 5s
       retries: 10
 
+  rating-service_db:
+    image: postgres:16.1
+    container_name: rating-service_db
+    volumes:
+      - ./core/rating-service/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+    ports:
+      - "5450:5432"
+    environment:
+      - POSTGRES_DB=rating-service
+      - POSTGRES_USER=rating
+      - POSTGRES_PASSWORD=rating
+    healthcheck:
+      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
+      timeout: 5s
+      interval: 5s
+      retries: 10
+
   ewm-main_db:
     image: postgres:16.1
     container_name: ewm-main_db

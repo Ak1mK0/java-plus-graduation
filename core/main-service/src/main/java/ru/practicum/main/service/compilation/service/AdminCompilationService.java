@@ -1,7 +1,7 @@
 package ru.practicum.main.service.compilation.service;
 
-import ru.practicum.main.service.compilation.dto.NewCompilationDto;
-import ru.practicum.main.service.compilation.dto.UpdateCompilationRequest;
+import ru.practicum.dto.compilationDto.NewCompilationDto;
+import ru.practicum.dto.compilationDto.UpdateCompilationRequest;
 import ru.practicum.main.service.compilation.model.Compilation;
 import ru.practicum.main.service.event.model.Event;
 

@@ -1,10 +1,9 @@
 package ru.practicum.main.service.event.service;
 
-import ru.practicum.main.service.event.dto.NewEventDto;
-import ru.practicum.main.service.event.dto.UpdateEventUserRequest;
+import ru.practicum.dto.eventDto.NewEventDto;
+import ru.practicum.dto.eventDto.UpdateEventUserRequest;
 import ru.practicum.main.service.event.model.Event;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 

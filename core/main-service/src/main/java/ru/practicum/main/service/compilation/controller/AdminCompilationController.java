@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.userDto.UserDto;
 import ru.practicum.dto.userDto.UserShortDto;
 import ru.practicum.faign.UserServiceFeign;
-import ru.practicum.main.service.compilation.dto.CompilationDto;
-import ru.practicum.main.service.compilation.dto.NewCompilationDto;
-import ru.practicum.main.service.compilation.dto.UpdateCompilationRequest;
+import ru.practicum.dto.compilationDto.CompilationDto;
+import ru.practicum.dto.compilationDto.NewCompilationDto;
+import ru.practicum.dto.compilationDto.UpdateCompilationRequest;
 import ru.practicum.main.service.compilation.mapper.CompilationMapper;
 import ru.practicum.main.service.compilation.model.Compilation;
 import ru.practicum.main.service.compilation.service.AdminCompilationService;
-import ru.practicum.main.service.event.dto.EventShortDto;
+import ru.practicum.dto.eventDto.EventShortDto;
 import ru.practicum.main.service.event.mapper.EventMapper;
 import ru.practicum.main.service.event.model.Event;
 
