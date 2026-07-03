@@ -4,8 +4,8 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import ru.practicum.dto.eventDto.EventFullDto;
 import ru.practicum.dto.requestDto.ParticipationRequestDto;
-import ru.practicum.model.ParticipationRequest;
 import ru.practicum.dto.requestDto.RequestStatus;
+import ru.practicum.model.ParticipationRequest;
 
 import java.time.LocalDateTime;
 

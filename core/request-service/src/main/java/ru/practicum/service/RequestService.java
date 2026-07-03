@@ -1,14 +1,11 @@
 package ru.practicum.service;
 
-import jakarta.validation.constraints.Positive;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import ru.practicum.dto.eventDto.EventFullDto;
 import ru.practicum.dto.requestDto.EventRequestStatusUpdateRequest;
 import ru.practicum.dto.requestDto.EventRequestStatusUpdateResult;
+import ru.practicum.dto.requestDto.RequestStatus;
 import ru.practicum.dto.userDto.UserDto;
 import ru.practicum.model.ParticipationRequest;
-import ru.practicum.dto.requestDto.RequestStatus;
 
 import java.util.List;
 

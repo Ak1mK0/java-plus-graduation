@@ -7,14 +7,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.exception.AlreadyExistsException;
-import ru.practicum.exception.ConditionsNotMetException;
-import ru.practicum.exception.NotFoundException;
-import ru.practicum.dto.categoryDto.CategoryDto;
 import ru.practicum.category.mapper.CategoryMapper;
 import ru.practicum.category.model.Category;
 import ru.practicum.category.repository.CategoryRepository;
 import ru.practicum.category.service.CategoryService;
+import ru.practicum.dto.categoryDto.CategoryDto;
+import ru.practicum.exception.AlreadyExistsException;
+import ru.practicum.exception.ConditionsNotMetException;
+import ru.practicum.exception.NotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;

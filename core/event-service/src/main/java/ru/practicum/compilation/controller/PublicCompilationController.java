@@ -5,19 +5,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.dto.requestDto.ParticipationRequestDto;
-import ru.practicum.dto.userDto.UserDto;
-import ru.practicum.dto.userDto.UserShortDto;
-import ru.practicum.faign.UserServiceFeign;
-import ru.practicum.dto.compilationDto.CompilationDto;
 import ru.practicum.compilation.mapper.CompilationMapper;
 import ru.practicum.compilation.model.Compilation;
 import ru.practicum.compilation.service.PublicCompilationService;
+import ru.practicum.dto.compilationDto.CompilationDto;
 import ru.practicum.dto.eventDto.EventShortDto;
+import ru.practicum.dto.requestDto.ParticipationRequestDto;
 import ru.practicum.dto.requestDto.RequestStatus;
+import ru.practicum.dto.userDto.UserDto;
+import ru.practicum.dto.userDto.UserShortDto;
 import ru.practicum.event.mapper.EventMapper;
 import ru.practicum.event.model.Event;
 import ru.practicum.faign.RequestServiceFeign;
+import ru.practicum.faign.UserServiceFeign;
 
 import java.util.List;
 import java.util.Map;
@@ -100,7 +100,6 @@ public class PublicCompilationController {
 
         return CompilationMapper.toDto(compilation, eventShortDtos);
     }
-
 
 
     private Map<Long, Long> getConfirmedRequestsCounts(List<Event> events) {

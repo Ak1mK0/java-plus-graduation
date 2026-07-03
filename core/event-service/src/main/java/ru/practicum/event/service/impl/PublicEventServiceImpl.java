@@ -8,17 +8,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.dto.eventDto.EventState;
+import ru.practicum.dto.requestDto.RequestStatus;
 import ru.practicum.dto.userDto.UserDto;
 import ru.practicum.dto.userDto.UserShortDto;
+import ru.practicum.event.model.Event;
+import ru.practicum.event.repository.EventRepository;
+import ru.practicum.event.service.PublicEventService;
 import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.faign.RequestServiceFeign;
 import ru.practicum.faign.UserServiceFeign;
-import ru.practicum.event.model.Event;
-import ru.practicum.dto.eventDto.EventState;
-import ru.practicum.event.repository.EventRepository;
-import ru.practicum.event.service.PublicEventService;
-import ru.practicum.dto.requestDto.RequestStatus;
 import ru.practicum.stat.client.StatsClient;
 import ru.practicum.stat.dto.EndpointHitDto;
 import ru.practicum.stat.dto.ViewStatsDto;
@@ -183,8 +183,6 @@ public class PublicEventServiceImpl implements PublicEventService {
             return Map.of();
         }
     }
-
-
 
 
     private void validateDateRange(LocalDateTime rangeStart, LocalDateTime rangeEnd) {

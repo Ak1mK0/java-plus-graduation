@@ -7,23 +7,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.dto.eventDto.EventFullDto;
+import ru.practicum.dto.eventDto.EventState;
+import ru.practicum.dto.eventDto.UpdateEventAdminRequest;
 import ru.practicum.dto.requestDto.ParticipationRequestDto;
 import ru.practicum.dto.requestDto.RequestStatus;
 import ru.practicum.dto.userDto.UserDto;
 import ru.practicum.dto.userDto.UserShortDto;
-import ru.practicum.faign.RequestServiceFeign;
-import ru.practicum.faign.UserServiceFeign;
-import ru.practicum.dto.eventDto.EventFullDto;
-import ru.practicum.dto.eventDto.UpdateEventAdminRequest;
 import ru.practicum.event.mapper.EventMapper;
 import ru.practicum.event.model.Event;
-import ru.practicum.dto.eventDto.EventState;
 import ru.practicum.event.service.AdminEventService;
+import ru.practicum.faign.RequestServiceFeign;
+import ru.practicum.faign.UserServiceFeign;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RestController
