@@ -124,7 +124,7 @@ public class PrivateEventController {
                                                                     @PathVariable @Positive Long eventId,
                                                                     @RequestBody EventRequestStatusUpdateRequest updateRequest) {
         log.info("PATCH /users/{}/events/{}/requests: {}", userId, eventId, updateRequest);
-        return requestServiceFeign.updateEventRequestsStatusWithParam(userId, eventId, updateRequest);
+        return requestServiceFeign.updateEventRequestsStatus(userId, eventId, updateRequest);
     }
 
 

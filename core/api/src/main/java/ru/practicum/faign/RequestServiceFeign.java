@@ -17,10 +17,10 @@ public interface RequestServiceFeign {
     List<ParticipationRequestDto> getEventRequests(@PathVariable @Positive Long userId,
                                                    @PathVariable @Positive Long eventId);
 
-    @PostMapping("/users/{userId}/requests/{eventId}/requests/param")
-    EventRequestStatusUpdateResult updateEventRequestsStatusWithParam(@PathVariable @Positive Long userId,
-                                                                      @PathVariable @Positive Long eventId,
-                                                                      @RequestBody EventRequestStatusUpdateRequest updateRequest);
+    @PostMapping("/users/{userId}/requests/{eventId}/requests")
+    EventRequestStatusUpdateResult updateEventRequestsStatus(@PathVariable @Positive Long userId,
+                                                             @PathVariable @Positive Long eventId,
+                                                             @RequestBody EventRequestStatusUpdateRequest updateRequest);
 
     @GetMapping("/users/{userId}/requests/{eventId}")
     boolean confirmUserRegisterOnEvent(@PathVariable @Positive Long userId,

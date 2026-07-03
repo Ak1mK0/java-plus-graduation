@@ -77,22 +77,11 @@ public class PrivateRequestController {
                 .collect(Collectors.toList());
     }
 
-    @PatchMapping("/{eventId}/requests")
+    @PostMapping("/{eventId}/requests")
     public EventRequestStatusUpdateResult updateEventRequestsStatus(@PathVariable @Positive Long userId,
                                                                     @PathVariable @Positive Long eventId,
                                                                     @RequestBody EventRequestStatusUpdateRequest updateRequest) {
         log.info("PATCH /users/{}/events/{}/requests с телом: {}", userId, eventId, updateRequest);
-
-        EventFullDto event = eventServiceFeign.getEventByIdWithoutHttp(eventId);
-
-        return requestService.updateEventRequestsStatus(userId, eventId, updateRequest, event);
-    }
-
-    @PostMapping("/{eventId}/requests/param")
-    public EventRequestStatusUpdateResult updateEventRequestsStatusWithParam(@PathVariable @Positive Long userId,
-                                                                             @PathVariable @Positive Long eventId,
-                                                                             @RequestBody EventRequestStatusUpdateRequest updateRequest) {
-        log.info("PATCH /users/{}/events/{}/requests/param с параметрами: {}", userId, eventId, updateRequest);
 
         EventFullDto event = eventServiceFeign.getEventByIdWithoutHttp(eventId);
 
