@@ -29,8 +29,8 @@ public class RatingController {
 
     private final RatingService ratingService;
     private final UserServiceFeign userServiceFeign;
-    private final EventServiceFeign eventRepositoryFeign;
-    private final RequestServiceFeign requestRepositoryFeign;
+    private final EventServiceFeign eventServiceFeign;
+    private final RequestServiceFeign requestServiceFeign;
 
     @PostMapping("/private/events/{userId}/{eventId}/like")
     @ResponseStatus(HttpStatus.CREATED)
@@ -41,9 +41,9 @@ public class RatingController {
 
         UserDto user = userServiceFeign.getUser(userId);
 
-        EventFullDto event = eventRepositoryFeign.getEventByIdWithoutHttp(eventId);
+        EventFullDto event = eventServiceFeign.getEventByIdWithoutHttp(eventId);
 
-        boolean userAttended = requestRepositoryFeign.confirmUserRegisterOnEvent(
+        boolean userAttended = requestServiceFeign.confirmUserRegisterOnEvent(
                 userId, eventId, RequestStatus.CONFIRMED);
 
         EventRating rating = ratingService.addLike(userId, eventId, dto, event, userAttended);
@@ -60,9 +60,9 @@ public class RatingController {
 
         UserDto user = userServiceFeign.getUser(userId);
 
-        EventFullDto event = eventRepositoryFeign.getEventByIdWithoutHttp(eventId);
+        EventFullDto event = eventServiceFeign.getEventByIdWithoutHttp(eventId);
 
-        boolean userAttended = requestRepositoryFeign.confirmUserRegisterOnEvent(
+        boolean userAttended = requestServiceFeign.confirmUserRegisterOnEvent(
                 userId, eventId, RequestStatus.CONFIRMED);
 
         EventRating rating = ratingService.addDislike(userId, eventId, dto, event, userAttended);
@@ -86,7 +86,7 @@ public class RatingController {
     public EventRatingStatsDto getEventRatingStats(@PathVariable @Positive Long eventId) {
         log.info("GET /public/events/{}/eventRating", eventId);
 
-        eventRepositoryFeign.getEventByIdWithoutHttp(eventId);
+        eventServiceFeign.getEventByIdWithoutHttp(eventId);
 
         return ratingService.getEventRatingStats(eventId);
     }

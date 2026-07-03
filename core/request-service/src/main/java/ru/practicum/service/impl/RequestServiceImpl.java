@@ -168,7 +168,8 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public boolean confirmUserRegisterOnEvent(Long userId, Long eventId, RequestStatus requestStatus) {
-        return requestRepository.existsByEventIdAndRequesterIdAndStatus(userId, eventId, requestStatus);
+        log.info("Проверяем с параметрами userId: {}, eventId: {}, status: {}", userId, eventId, requestStatus);
+        return requestRepository.existsByEventIdAndRequesterIdAndStatus(eventId, userId, requestStatus);
     }
 
     @Override
