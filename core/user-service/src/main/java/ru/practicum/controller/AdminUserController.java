@@ -45,9 +45,7 @@ public class AdminUserController {
 
     @GetMapping("/allUsersById")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDto> getAllUsersById(@RequestParam(name = "ids", required = false) List<Long> ids,
-                                  @RequestParam(name = "from", defaultValue = "0") Long from,
-                                  @RequestParam(name = "size", defaultValue = "10") Long size) {
+    public List<UserDto> getAllUsersById(@RequestParam(name = "ids", required = false) List<Long> ids) {
         log.info("GET /admin/users/allUsersById - Получение списка пользователей: ids {}", ids);
         return userService.getAllUsersById(ids)
                 .stream()

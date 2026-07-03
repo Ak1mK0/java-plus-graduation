@@ -10,71 +10,104 @@ spring:
         locator:
           enabled: true
       routes:
+        # ===== СНАЧАЛА МАРШРУТЫ ДЛЯ EVENT-SERVICE (БОЛЕЕ СПЕЦИФИЧНЫЕ) =====
+
+        - id: event-service-admin
+          uri: lb://event-service
+          predicates:
+            - Path=/admin/events/**
+          filters:
+            - StripPrefix=0
+
+        - id: event-service-private
+          uri: lb://event-service
+          predicates:
+            - Path=/users/{userId}/events/**
+          filters:
+            - StripPrefix=0
+
+        - id: event-service-public
+          uri: lb://event-service
+          predicates:
+            - Path=/events/**
+          filters:
+            - StripPrefix=0
+
+        - id: category-service-admin
+          uri: lb://event-service
+          predicates:
+            - Path=/admin/categories/**
+          filters:
+            - StripPrefix=0
+
+        - id: category-service-public
+          uri: lb://event-service
+          predicates:
+            - Path=/categories/**
+          filters:
+            - StripPrefix=0
+
+        - id: compilation-service-admin
+          uri: lb://event-service
+          predicates:
+            - Path=/admin/compilations/**
+          filters:
+            - StripPrefix=0
+
+        - id: compilation-service-public
+          uri: lb://event-service
+          predicates:
+            - Path=/compilations/**
+          filters:
+            - StripPrefix=0
+
+        # ===== ЗАТЕМ МАРШРУТЫ ДЛЯ REQUEST-SERVICE =====
+
+        - id: request-service-all-with-status
+          uri: lb://request-service
+          predicates:
+            - Path=/users/{userId}/requests/allWithStatus/list
+          filters:
+            - StripPrefix=0
+
+        - id: request-service-private-events
+          uri: lb://request-service
+          predicates:
+            - Path=/users/{userId}/events/{eventId}/requests/**
+          filters:
+            - StripPrefix=0
+
+        - id: request-service-private-requests
+          uri: lb://request-service
+          predicates:
+            - Path=/users/{userId}/requests/**
+          filters:
+            - StripPrefix=0
+
+        # ===== МАРШРУТЫ ДЛЯ USER-SERVICE =====
 
         - id: user-service-admin
           uri: lb://user-service
           predicates:
             - Path=/admin/users/**
+          filters:
+            - StripPrefix=0
 
-
-        - id: category-service-admin
-          uri: lb://main-service
-          predicates:
-            - Path=/admin/categories/**
-
-        - id: category-service-public
-          uri: lb://main-service
-          predicates:
-            - Path=/categories/**
-
-
-        - id: compilation-service-admin
-          uri: lb://main-service
-          predicates:
-            - Path=/admin/compilations/**
-
-        - id: compilation-service-public
-          uri: lb://main-service
-          predicates:
-            - Path=/compilations/**
-
-
-        - id: event-service-admin
-          uri: lb://main-service
-          predicates:
-            - Path=/admin/events/**
-
-        - id: event-service-public
-          uri: lb://main-service
-          predicates:
-            - Path=/events/**
-
-        - id: event-service-private
-          uri: lb://main-service
-          predicates:
-            - Path=/users/*/events/**
-
-
-        - id: request-service-private-requests
-          uri: lb://main-service
-          predicates:
-            - Path=/users/*/requests/**
-
-        - id: request-service-private-events
-          uri: lb://main-service
-          predicates:
-            - Path=/users/*/events/*/requests/**
-
+        # ===== МАРШРУТЫ ДЛЯ RATING-SERVICE =====
 
         - id: rating-service-private
-          uri: lb://main-service
+          uri: lb://rating-service
           predicates:
             - Path=/private/events/**
+          filters:
+            - StripPrefix=0
 
         - id: rating-service-public
-          uri: lb://main-service
+          uri: lb://rating-service
           predicates:
             - Path=/public/events/**
+          filters:
+            - StripPrefix=0
 
 eureka:
   client:

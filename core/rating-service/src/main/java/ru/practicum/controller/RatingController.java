@@ -11,8 +11,8 @@ import ru.practicum.dto.eventDto.EventFullDto;
 import ru.practicum.dto.ratingDto.*;
 import ru.practicum.dto.requestDto.RequestStatus;
 import ru.practicum.dto.userDto.UserDto;
-import ru.practicum.faign.EventRepositoryFeign;
-import ru.practicum.faign.RequestRepositoryFeign;
+import ru.practicum.faign.EventServiceFeign;
+import ru.practicum.faign.RequestServiceFeign;
 import ru.practicum.faign.UserServiceFeign;
 import ru.practicum.mapper.RatingMapper;
 import ru.practicum.model.EventRating;
@@ -29,8 +29,8 @@ public class RatingController {
 
     private final RatingService ratingService;
     private final UserServiceFeign userServiceFeign;
-    private final EventRepositoryFeign eventRepositoryFeign;
-    private final RequestRepositoryFeign requestRepositoryFeign;
+    private final EventServiceFeign eventRepositoryFeign;
+    private final RequestServiceFeign requestRepositoryFeign;
 
     @PostMapping("/private/events/{userId}/{eventId}/like")
     @ResponseStatus(HttpStatus.CREATED)
@@ -41,10 +41,10 @@ public class RatingController {
 
         UserDto user = userServiceFeign.getUser(userId);
 
-        EventFullDto event = eventRepositoryFeign.getEventById(eventId, null);
+        EventFullDto event = eventRepositoryFeign.getEventByIdWithoutHttp(eventId);
 
         boolean userAttended = requestRepositoryFeign.confirmUserRegisterOnEvent(
-                eventId, userId, RequestStatus.CONFIRMED);
+                userId, eventId, RequestStatus.CONFIRMED);
 
         EventRating rating = ratingService.addLike(userId, eventId, dto, event, userAttended);
 
@@ -60,10 +60,10 @@ public class RatingController {
 
         UserDto user = userServiceFeign.getUser(userId);
 
-        EventFullDto event = eventRepositoryFeign.getEventById(eventId, null);
+        EventFullDto event = eventRepositoryFeign.getEventByIdWithoutHttp(eventId);
 
         boolean userAttended = requestRepositoryFeign.confirmUserRegisterOnEvent(
-                eventId, userId, RequestStatus.CONFIRMED);
+                userId, eventId, RequestStatus.CONFIRMED);
 
         EventRating rating = ratingService.addDislike(userId, eventId, dto, event, userAttended);
 
@@ -86,7 +86,7 @@ public class RatingController {
     public EventRatingStatsDto getEventRatingStats(@PathVariable @Positive Long eventId) {
         log.info("GET /public/events/{}/eventRating", eventId);
 
-        eventRepositoryFeign.getEventById(eventId, null);
+        eventRepositoryFeign.getEventByIdWithoutHttp(eventId);
 
         return ratingService.getEventRatingStats(eventId);
     }
