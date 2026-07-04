@@ -32,7 +32,6 @@ public class AdminUserController {
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
     public List<UserDto> getUsers(@RequestParam(name = "ids", required = false) List<Long> ids,
                                   @RequestParam(name = "from", defaultValue = "0") Long from,
                                   @RequestParam(name = "size", defaultValue = "10") Long size) {
@@ -44,7 +43,6 @@ public class AdminUserController {
     }
 
     @GetMapping("/allUsersById")
-    @ResponseStatus(HttpStatus.OK)
     public List<UserDto> getAllUsersById(@RequestParam(name = "ids", required = false) List<Long> ids) {
         log.info("GET /admin/users/allUsersById - Получение списка пользователей: ids {}", ids);
         return userService.getAllUsersById(ids)
@@ -54,7 +52,6 @@ public class AdminUserController {
     }
 
     @GetMapping("/{userId}")
-    @ResponseStatus(HttpStatus.OK)
     public UserDto getUser(@PathVariable("userId") Long userId) {
         log.info("GET /admin/users/{userId} - Получение пользователя: id {}", userId);
         return UserMapper.toDto(userService.getUser(userId));

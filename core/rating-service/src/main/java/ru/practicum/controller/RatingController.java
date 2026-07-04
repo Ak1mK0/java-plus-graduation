@@ -82,7 +82,6 @@ public class RatingController {
     }
 
     @GetMapping("/public/events/{eventId}/eventRating")
-    @ResponseStatus(HttpStatus.OK)
     public EventRatingStatsDto getEventRatingStats(@PathVariable @Positive Long eventId) {
         log.info("GET /public/events/{}/eventRating", eventId);
 
@@ -92,7 +91,6 @@ public class RatingController {
     }
 
     @GetMapping("/public/events/{userId}/userRating")
-    @ResponseStatus(HttpStatus.OK)
     public EventRatingListDto getUserRatings(@PathVariable @Positive Long userId,
                                              @RequestParam(required = false) String rating,
                                              @RequestParam(defaultValue = "0") int from,
@@ -105,7 +103,6 @@ public class RatingController {
     }
 
     @GetMapping("/public/events/rating")
-    @ResponseStatus(HttpStatus.OK)
     public List<EventRatingTopDto> getTopRatedEvents(@RequestParam(defaultValue = "0") int from,
                                                      @RequestParam(defaultValue = "10") int size,
                                                      @RequestParam(defaultValue = "DESC") String order) {
