@@ -29,7 +29,7 @@ public class AggregationStarter {
 
     public void start() {
         try {
-            client.getConsumer().subscribe(List.of("stats.user-actions.v2"));
+            client.getConsumer().subscribe(List.of("stats.user-actions.v1"));
 
             while (true) {
                 ConsumerRecords<String, UserActionAvro> records =

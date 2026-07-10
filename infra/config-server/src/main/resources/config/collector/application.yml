@@ -33,7 +33,7 @@ logging:
 
 kafka:
   producer:
-    group-id: user-action-producer
+    group-id: collector-producer
     client-id: collector-${random.uuid}
     bootstrap-servers: localhost:9092
     key-serializer: org.apache.kafka.common.serialization.StringSerializer

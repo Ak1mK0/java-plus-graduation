@@ -118,3 +118,20 @@ services:
       timeout: 5s
       interval: 5s
       retries: 10
+
+  analyzer_db:
+    image: postgres:16.1
+    container_name: analyzer_db
+    volumes:
+      - ./stat/analyzer/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+    ports:
+      - "5470:5432"
+    environment:
+      - POSTGRES_DB=analyzer_db
+      - POSTGRES_USER=analyzer
+      - POSTGRES_PASSWORD=analyzer
+    healthcheck:
+      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
+      timeout: 5s
+      interval: 5s
+      retries: 10
