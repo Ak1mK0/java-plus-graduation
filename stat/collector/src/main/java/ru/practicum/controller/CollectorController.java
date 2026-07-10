@@ -35,6 +35,7 @@ public class CollectorController extends UserActionControllerGrpc.UserActionCont
         log.info("Маппинг данных в avro: {}", avro);
         try {
             producer.send(new ProducerRecord<>("stats.user-actions.v1", avro));
+            producer.send(new ProducerRecord<>("stats.user-actions.v2", avro));
             responseObserver.onNext(Empty.getDefaultInstance());
             responseObserver.onCompleted();
         }  catch (Exception e) {

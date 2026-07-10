@@ -26,6 +26,9 @@ services:
                   'kafka-topics --create --topic stats.user-actions.v1 \
                                --partitions 1 --replication-factor 1 --if-not-exists \
                                --bootstrap-server kafka:29092 && \
+                  kafka-topics --create --topic stats.user-actions.v2 \
+                               --partitions 1 --replication-factor 1 --if-not-exists \
+                               --bootstrap-server kafka:29092 && \
                   kafka-topics --create --topic stats.events-similarity.v1 \
                                --partitions 1 --replication-factor 1 --if-not-exists \
                                --bootstrap-server kafka:29092'"
