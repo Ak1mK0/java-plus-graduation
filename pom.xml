@@ -49,6 +49,7 @@
 		<module>stat/serialization</module>
 		<module>stat/serialization/avro-schemas</module>
         <module>stat/serialization/proto-schemas</module>
+        <module>stat/Aggregator</module>
     </modules>
 
 	<dependencyManagement>

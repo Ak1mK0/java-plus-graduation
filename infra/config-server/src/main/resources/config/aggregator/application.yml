@@ -5,7 +5,7 @@ grpc:
 
 spring:
   application:
-    name: collector
+    name: aggregator
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.r2dbc.R2dbcAutoConfiguration
@@ -32,9 +32,15 @@ logging:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level --- [%thread] %logger{36} : %msg%n"
 
 kafka:
+  bootstrap-servers: localhost:9092
+
+  consumer:
+    group-id: user-action-consumer
+    auto-offset-reset: earliest
+    key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    value-deserializer: deserializer.UserActionDeserializer
+
   producer:
-    group-id: user-action-producer
-    client-id: collector-${random.uuid}
-    bootstrap-servers: localhost:9092
+    group-id: event-similarity-producer
     key-serializer: org.apache.kafka.common.serialization.StringSerializer
     value-serializer: serializer.AvroSerializer
