@@ -2,6 +2,7 @@ package ru.practicum.event.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,8 +18,7 @@ import ru.practicum.event.service.AdminEventService;
 import ru.practicum.exception.ConditionsNotMetException;
 import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
-import ru.practicum.stat.client.StatsClient;
-import ru.practicum.stat.dto.ViewStatsDto;
+import stats.service.collector.UserActionControllerGrpc;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,7 +31,8 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
-    private final StatsClient statsClient;
+    @GrpcClient("collector")
+    private final UserActionControllerGrpc.UserActionControllerBlockingStub userActionControl;
 
     @Override
     public List<Event> getAdminEvents(List<Long> users, List<EventState> states, List<Long> categories,

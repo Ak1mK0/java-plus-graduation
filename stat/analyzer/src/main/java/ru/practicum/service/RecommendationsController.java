@@ -3,7 +3,6 @@ package ru.practicum.service;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.devh.boot.grpc.client.inject.GrpcClient;
 import net.devh.boot.grpc.server.service.GrpcService;
 import ru.practicum.model.EventSimilarity;
 import ru.practicum.model.UserAction;
@@ -23,9 +22,6 @@ import java.util.stream.Collectors;
 public class RecommendationsController extends RecommendationControllerGrpc.RecommendationControllerImplBase {
     private final EventSimilarityRepository eventSimilarityRepository;
     private final UserActionRepository userActionRepository;
-
-    @GrpcClient("stats-server")
-    private RecommendationControllerGrpc.RecommendationControllerBlockingStub recommendationController;
 
     @Override
     public void getRecommendationsForUser(UserPredictionsRequestProto request,

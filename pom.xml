@@ -45,12 +45,6 @@
 		<module>stat</module>
 		<module>core</module>
 		<module>core/api</module>
-        <module>stat/collector</module>
-		<module>stat/serialization</module>
-		<module>stat/serialization/avro-schemas</module>
-        <module>stat/serialization/proto-schemas</module>
-        <module>stat/Aggregator</module>
-        <module>stat/analyzer</module>
     </modules>
 
 	<dependencyManagement>

@@ -7,7 +7,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.eventDto.EventState;
 import ru.practicum.dto.requestDto.RequestStatus;
 import ru.practicum.dto.userDto.UserDto;
@@ -19,10 +18,12 @@ import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.faign.RequestServiceFeign;
 import ru.practicum.faign.UserServiceFeign;
-import ru.practicum.stat.client.StatsClient;
-import ru.practicum.stat.dto.EndpointHitDto;
-import ru.practicum.stat.dto.ViewStatsDto;
+import stats.service.collector.ActionTypeProto;
+import stats.service.collector.UserActionControllerGrpc;
+import stats.service.collector.UserActionProto;
 
+import com.google.protobuf.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +36,8 @@ public class PublicEventServiceImpl implements PublicEventService {
 
     private final EventRepository eventRepository;
     private final RequestServiceFeign requestServiceFeign;
-    private final StatsClient statsClient;
     private final UserServiceFeign userServiceFeign;
+    private final UserActionControllerGrpc.UserActionControllerBlockingStub userActionControl;
 
     @Override
     public List<Event> getPublicEvents(String text, List<Long> categories, Boolean paid,
@@ -56,10 +57,7 @@ public class PublicEventServiceImpl implements PublicEventService {
             events = filterOnlyAvailable(events);
         }
 
-        List<Event> result = applySorting(events, sort);
-        saveHit(request);
-
-        return result;
+        return applySorting(events, sort);
     }
 
     @Override
@@ -68,7 +66,19 @@ public class PublicEventServiceImpl implements PublicEventService {
 
         Event event = eventRepository.findByIdAndState(eventId, EventState.PUBLISHED)
                 .orElseThrow(() -> new NotFoundException("Ивент с id:" + eventId + " не найден"));
-        saveHit(request);
+
+        String userIdHeader = request.getHeader("X-EWM-USER-ID");
+        int userId = Integer.parseInt(userIdHeader);
+        UserActionProto action = UserActionProto.newBuilder()
+                .setUserId(Math.toIntExact(userId))
+                .setEventId(Math.toIntExact(event.getId()))
+                .setActionType(ActionTypeProto.ACTION_VIEW)
+                .setTimestamp(com.google.protobuf.Timestamp.newBuilder()
+                        .setSeconds(Instant.now().getEpochSecond())
+                        .setNanos(Instant.now().getNano())
+                        .build())
+                .build();
+        userActionControl.collectUserAction(action);
 
         return event;
     }
@@ -236,12 +246,7 @@ public class PublicEventServiceImpl implements PublicEventService {
     }
 
     private void saveHit(HttpServletRequest request) {
-        EndpointHitDto hit = EndpointHitDto.builder()
-                .app("ewm-main-service")
-                .uri(request.getRequestURI())
-                .ip(request.getRemoteAddr())
-                .timestamp(LocalDateTime.now())
-                .build();
-        statsClient.hit(hit);
+
+
     }
 }
