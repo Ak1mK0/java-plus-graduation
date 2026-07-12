@@ -9,11 +9,11 @@ option java_package = "stats.service.dashboard";
 
 service RecommendationController {
     rpc GetRecommendationsForUser(stats.service.dashboard.UserPredictionsRequestProto)
-    returns (stats.service.dashboard.RecommendedEventProto);
+    returns (stream stats.service.dashboard.RecommendedEventProto);
 
     rpc GetSimilarEvents(stats.service.dashboard.SimilarEventsRequestProto)
-    returns (stats.service.dashboard.RecommendedEventProto);
+    returns (stream stats.service.dashboard.RecommendedEventProto);
 
     rpc GetInteractionsCount(stats.service.dashboard.InteractionsCountRequestProto)
-    returns (stats.service.dashboard.RecommendedEventProto);
+    returns (stream stats.service.dashboard.RecommendedEventProto);
 }

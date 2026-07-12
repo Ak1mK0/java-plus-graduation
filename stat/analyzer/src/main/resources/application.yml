@@ -1,3 +1,8 @@
+grpc:
+  server:
+    port: 0
+    reflection-service-enabled: true
+
 spring:
   application:
     name: analyzer

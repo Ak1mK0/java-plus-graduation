@@ -2,12 +2,6 @@ grpc:
   server:
     port: 0
     reflection-service-enabled: true
-  client:
-    hub-router:
-      address: 'static://localhost:59090'
-      enableKeepAlive: true
-      keepAliveWithoutCalls: true
-      negotiationType: plaintext
 
 spring:
   application:
