@@ -13,6 +13,7 @@ import java.util.List;
 @FeignClient(name = "stats-server", configuration = FeignConfig.class)
 public interface StatServerFaign {
 
+    @PostMapping("/api/save")
     void saveStat(@RequestParam Long userId,
                   @RequestParam Long eventId,
                   @RequestParam ActionTypeProto action);

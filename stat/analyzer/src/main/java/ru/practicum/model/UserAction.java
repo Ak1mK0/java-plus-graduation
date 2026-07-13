@@ -2,7 +2,6 @@ package ru.practicum.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.SQLInsert;
 
 import java.time.Instant;
 

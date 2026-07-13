@@ -1,6 +1,7 @@
 package ru.practicum.service;
 
 import io.grpc.stub.StreamObserver;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
@@ -23,15 +24,21 @@ public class RecommendationsController extends RecommendationControllerGrpc.Reco
     private final EventSimilarityRepository eventSimilarityRepository;
     private final UserActionRepository userActionRepository;
 
+    @PostConstruct
+    public void init() {
+        log.info("RecommendationsController инициализирован и зарегистрирован как gRPC сервис");
+    }
+
     @Override
     public void getRecommendationsForUser(UserPredictionsRequestProto request,
                                           StreamObserver<RecommendedEventProto> responseObserver) {
+        log.info("Получен запрос на получение рекомендаций для пользователя ID: {}", request.getUserId());
         try {
             Long userId = (long) request.getUserId();
             int maxResults = request.getMaxResults();
 
             List<UserAction> userActions = userActionRepository
-                    .findAllByUserIdOrderByActionTimestampDesc(userId);
+                    .findAllByUserIdOrderByTsDesc(userId);
 
             List<Long> recentInteractedEvents = userActions.stream()
                     .map(UserAction::getEventId)
@@ -39,6 +46,7 @@ public class RecommendationsController extends RecommendationControllerGrpc.Reco
                     .toList();
 
             if (recentInteractedEvents.isEmpty()) {
+                log.info("У пользователя ID: {} нет взаимодействий с событиями", userId);
                 responseObserver.onCompleted();
                 return;
             }
@@ -116,9 +124,12 @@ public class RecommendationsController extends RecommendationControllerGrpc.Reco
                     .limit(maxResults)
                     .forEach(responseObserver::onNext);
 
+            log.info("Успешно отправлено {} рекомендаций для пользователя ID: {}",
+                    Math.min(result.size(), maxResults), userId);
             responseObserver.onCompleted();
+
         } catch (Exception e) {
-            log.error("Ошибка при передаче данных", e);
+            log.info("Ошибка при формировании рекомендаций для пользователя ID: {}", request.getUserId(), e);
             responseObserver.onError(e);
         }
     }
@@ -126,6 +137,8 @@ public class RecommendationsController extends RecommendationControllerGrpc.Reco
     @Override
     public void getSimilarEvents(SimilarEventsRequestProto request,
                                  StreamObserver<RecommendedEventProto> responseObserver) {
+        log.info("Получен запрос на поиск похожих событий: userId={}, eventId={}",
+                request.getUserId(), request.getEventId());
         try {
             Long userId = (long) request.getUserId();
             Long eventId = (long) request.getEventId();
@@ -150,16 +163,20 @@ public class RecommendationsController extends RecommendationControllerGrpc.Reco
                             .setEventId(Math.toIntExact(similarEventId))
                             .setScore(event.getSimilarity())
                             .build());
+
                     if (result.size() >= maxEventNumber) {
                         break;
                     }
                 }
             }
 
+            log.info("Найдено {} похожих событий для пользователя ID: {}", result.size(), userId);
             result.forEach(responseObserver::onNext);
+            log.info("Успешно отправлены похожие события для пользователя ID: {}", userId);
             responseObserver.onCompleted();
+
         } catch (Exception e) {
-            log.error("Ошибка при передаче данных", e);
+            log.info("Ошибка при поиске похожих событий для eventId: {}", request.getEventId(), e);
             responseObserver.onError(e);
         }
     }
@@ -167,11 +184,14 @@ public class RecommendationsController extends RecommendationControllerGrpc.Reco
     @Override
     public void getInteractionsCount(InteractionsCountRequestProto request,
                                      StreamObserver<RecommendedEventProto> responseObserver) {
+        log.info("Получен запрос на получение количества взаимодействий для {} событий",
+                request.getEventIdList().size());
         try {
             List<Long> eventIds = request.getEventIdList().stream()
                     .map(Integer::longValue)
                     .toList();
-            List<UserAction> usersActions = userActionRepository.findAllByEventId(eventIds);
+
+            List<UserAction> usersActions = userActionRepository.findAllByEventIdIn(eventIds);
 
             Map<Integer, Float> eventScore = usersActions.stream()
                     .collect(Collectors.toMap(
@@ -187,12 +207,13 @@ public class RecommendationsController extends RecommendationControllerGrpc.Reco
                         .build();
                 responseObserver.onNext(response);
             });
+
+            log.info("Успешно отправлены оценки для {} событий", eventScore.size());
             responseObserver.onCompleted();
 
         } catch (Exception e) {
-            log.error("Ошибка при передаче данных", e);
+            log.info("Ошибка при расчете количества взаимодействий для событий", e);
             responseObserver.onError(e);
         }
     }
-
 }

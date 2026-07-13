@@ -23,11 +23,12 @@ import java.util.stream.StreamSupport;
 public class StatServerController {
 
     @GrpcClient("analyzer")
-    private final RecommendationControllerGrpc.RecommendationControllerBlockingStub client;
+    private RecommendationControllerGrpc.RecommendationControllerBlockingStub client;
 
     @GrpcClient("collector")
-    private final UserActionControllerGrpc.UserActionControllerBlockingStub userActionControl;
+    private UserActionControllerGrpc.UserActionControllerBlockingStub userActionControl;
 
+    @PostMapping("/api/save")
     public void saveStat(Long userId, Long eventId, ActionTypeProto action) {
         UserActionProto userAction = UserActionProto.newBuilder()
                 .setUserId(Math.toIntExact(userId))

@@ -11,12 +11,13 @@ import java.util.Optional;
 public interface UserActionRepository extends JpaRepository<UserAction, Long> {
     Optional<UserAction> findByUserIdAndEventId(Long userId, Long eventId);
 
-    List<UserAction> findAllByEventId(List<Long> eventId);
+    List<UserAction> findAllByEventIdIn(List<Long> eventId);
 
     List<UserAction> findAllByUserId(Long userId);
 
     @Query("SELECT ua FROM UserAction ua " +
             "WHERE ua.userId = :userId " +
-            "ORDER BY ua.actionTimestamp DESC")
-    List<UserAction> findAllByUserIdOrderByActionTimestampDesc(@Param("userId") Long userId);
+            "ORDER BY ua.ts DESC")
+    List<UserAction> findAllByUserIdOrderByTsDesc(@Param("userId") Long userId);
 }
+
