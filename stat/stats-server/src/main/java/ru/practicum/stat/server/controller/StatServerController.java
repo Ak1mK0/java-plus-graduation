@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.dto.statServerDto.RecommendedEventDto;
+import ru.practicum.stat.server.mapper.RecommendedEventMapper;
 import stats.service.collector.ActionTypeProto;
 import stats.service.collector.UserActionControllerGrpc;
 import stats.service.collector.UserActionProto;
@@ -43,30 +45,37 @@ public class StatServerController {
     }
 
     @GetMapping("/api/recommendations")
-    public List<RecommendedEventProto> getRecommendationsForUserAsList(@RequestParam long userId,
+    public List<RecommendedEventDto> getRecommendationsForUserAsList(@RequestParam long userId,
                                                                        @RequestParam int maxResults) {
         log.info("Feign call: getRecommendationsForUser, userId={}, maxResults={}", userId, maxResults);
         return getRecommendationsForUser(userId, maxResults)
+                .map(RecommendedEventMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/api/similar")
-    public List<RecommendedEventProto> getSimilarEventsAsList(@RequestParam long eventId,
+    public List<RecommendedEventDto> getSimilarEventsAsList(@RequestParam long eventId,
                                                               @RequestParam long userId,
                                                               @RequestParam int maxResults) {
         log.info("Feign call: getSimilarEvents, eventId={}, userId={}, maxResults={}", eventId, userId, maxResults);
         return getSimilarEvents(eventId, userId, maxResults)
+                .map(RecommendedEventMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     @PostMapping("/api/interactions")
-    public List<RecommendedEventProto> getInteractionsCountAsList(@RequestBody List<Long> eventIds) {
+    public List<RecommendedEventDto> getInteractionsCountAsList(@RequestBody List<Long> eventIds) {
         log.info("Feign call: getInteractionsCount, eventIds={}", eventIds);
         if (eventIds == null || eventIds.isEmpty()) {
             return Collections.emptyList();
         }
-        return getInteractionsCount(eventIds)
-                .collect(Collectors.toList());
+        List<RecommendedEventProto> resultProtoList = getInteractionsCount(eventIds).toList();
+        log.info("resultProtoList: {}", resultProtoList);
+        List<RecommendedEventDto> resultDtoList = resultProtoList.stream()
+                .map(RecommendedEventMapper::toDto)
+                .toList();
+        log.info("resultDtoList: {}", resultDtoList);
+        return resultDtoList;
     }
 
     public Stream<RecommendedEventProto> getRecommendationsForUser(long userId, int maxResults) {
@@ -101,6 +110,7 @@ public class StatServerController {
                         .map(Long::intValue)
                         .collect(Collectors.toList()))
                 .build();
+        log.info("request {}", request);
         Iterator<RecommendedEventProto> iterator = client.getInteractionsCount(request);
         log.info("grpc iterator: {}", iterator);
         return asStream(iterator);

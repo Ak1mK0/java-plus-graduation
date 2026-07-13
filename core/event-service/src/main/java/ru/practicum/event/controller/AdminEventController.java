@@ -12,6 +12,7 @@ import ru.practicum.dto.eventDto.EventState;
 import ru.practicum.dto.eventDto.UpdateEventAdminRequest;
 import ru.practicum.dto.requestDto.ParticipationRequestDto;
 import ru.practicum.dto.requestDto.RequestStatus;
+import ru.practicum.dto.statServerDto.RecommendedEventDto;
 import ru.practicum.dto.userDto.UserDto;
 import ru.practicum.dto.userDto.UserShortDto;
 import ru.practicum.event.mapper.EventMapper;
@@ -74,7 +75,7 @@ public class AdminEventController {
         List<Long> eventIds = events.stream()
                 .map(Event::getId)
                 .toList();
-        List<RecommendedEventProto> rating = statServerFaign.getInteractionsCount(eventIds);
+        List<RecommendedEventDto> rating = statServerFaign.getInteractionsCount(eventIds);
         Map<Long, Double> ratingForEventMap = new HashMap<>();
         rating.forEach(recommendedEventProto -> {
                     ratingForEventMap.putIfAbsent((long) recommendedEventProto.getEventId(), recommendedEventProto.getScore());
@@ -101,9 +102,9 @@ public class AdminEventController {
         UserShortDto userShortDto = new UserShortDto(user.getId(), user.getName());
 
         Long confirmedRequests = getConfirmedRequestsCount(eventId);
-
-        List<RecommendedEventProto> rating = statServerFaign.getInteractionsCount(List.of(eventId));
-
+        log.info("confirmedRequests: {}", confirmedRequests);
+        List<RecommendedEventDto> rating = statServerFaign.getInteractionsCount(List.of(eventId));
+        log.info("List<RecommendedEventDto>: {}", rating);
         EventFullDto eventFullDto = EventMapper.toFullDto(updatedEvent, confirmedRequests, rating.getFirst().getScore(), userShortDto);
         log.info("Результат обновления: {}", eventFullDto);
         return eventFullDto;

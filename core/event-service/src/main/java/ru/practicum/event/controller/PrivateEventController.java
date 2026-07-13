@@ -15,6 +15,7 @@ import ru.practicum.dto.requestDto.EventRequestStatusUpdateRequest;
 import ru.practicum.dto.requestDto.EventRequestStatusUpdateResult;
 import ru.practicum.dto.requestDto.ParticipationRequestDto;
 import ru.practicum.dto.requestDto.RequestStatus;
+import ru.practicum.dto.statServerDto.RecommendedEventDto;
 import ru.practicum.dto.userDto.UserDto;
 import ru.practicum.dto.userDto.UserShortDto;
 import ru.practicum.event.mapper.EventMapper;
@@ -75,7 +76,7 @@ public class PrivateEventController {
         List<Long> eventIds = events.stream()
                 .map(Event::getId)
                 .toList();
-        List<RecommendedEventProto> rating = statServerFaign.getInteractionsCount(eventIds);
+        List<RecommendedEventDto> rating = statServerFaign.getInteractionsCount(eventIds);
         Map<Long, Double> ratingForEventMap = new HashMap<>();
         rating.forEach(recommendedEventProto -> {
                     ratingForEventMap.putIfAbsent((long) recommendedEventProto.getEventId(), recommendedEventProto.getScore());
@@ -100,7 +101,7 @@ public class PrivateEventController {
 
         Long confirmedRequests = getConfirmedRequestsCount(eventId);
 
-        List<RecommendedEventProto> rating = statServerFaign.getInteractionsCount(List.of(eventId));
+        List<RecommendedEventDto> rating = statServerFaign.getInteractionsCount(List.of(eventId));
 
         return EventMapper.toFullDto(event, confirmedRequests, rating.getFirst().getScore(),
                 new UserShortDto(user.getId(), user.getName()));
@@ -117,7 +118,7 @@ public class PrivateEventController {
 
         Long confirmedRequests = getConfirmedRequestsCount(eventId);
 
-        List<RecommendedEventProto> rating = statServerFaign.getInteractionsCount(List.of(eventId));
+        List<RecommendedEventDto> rating = statServerFaign.getInteractionsCount(List.of(eventId));
 
         return EventMapper.toFullDto(event, confirmedRequests, rating.getFirst().getScore(),
                 new UserShortDto(user.getId(), user.getName()));

@@ -16,6 +16,7 @@ import ru.practicum.dto.compilationDto.UpdateCompilationRequest;
 import ru.practicum.dto.eventDto.EventShortDto;
 import ru.practicum.dto.requestDto.ParticipationRequestDto;
 import ru.practicum.dto.requestDto.RequestStatus;
+import ru.practicum.dto.statServerDto.RecommendedEventDto;
 import ru.practicum.dto.userDto.UserDto;
 import ru.practicum.dto.userDto.UserShortDto;
 import ru.practicum.event.mapper.EventMapper;
@@ -49,7 +50,8 @@ public class AdminCompilationController {
 
         Compilation compilation = adminCompilationService.createCompilation(newCompilationDto);
 
-        List<RecommendedEventProto> rating = statServerFaign.getInteractionsCount(newCompilationDto.getEvents());
+
+        List<RecommendedEventDto> rating = statServerFaign.getInteractionsCount(newCompilationDto.getEvents());
         Map<Long, Double> ratingForEventMap = new HashMap<>();
         rating.forEach(recommendedEventProto -> {
                     ratingForEventMap.putIfAbsent((long) recommendedEventProto.getEventId(), recommendedEventProto.getScore());
@@ -76,7 +78,7 @@ public class AdminCompilationController {
 
         Compilation compilation = adminCompilationService.updateCompilation(compId, request);
 
-        List<RecommendedEventProto> rating = statServerFaign.getInteractionsCount(request.getEvents());
+        List<RecommendedEventDto> rating = statServerFaign.getInteractionsCount(request.getEvents());
         Map<Long, Double> ratingForEventMap = new HashMap<>();
         rating.forEach(recommendedEventProto -> {
                     ratingForEventMap.putIfAbsent((long) recommendedEventProto.getEventId(), recommendedEventProto.getScore());

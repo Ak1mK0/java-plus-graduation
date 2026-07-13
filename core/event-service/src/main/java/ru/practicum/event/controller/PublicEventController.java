@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.eventDto.EventFullDto;
 import ru.practicum.dto.eventDto.EventShortDto;
+import ru.practicum.dto.statServerDto.RecommendedEventDto;
 import ru.practicum.dto.userDto.UserShortDto;
 import ru.practicum.event.mapper.EventMapper;
 import ru.practicum.event.model.Event;
@@ -62,7 +63,7 @@ public class PublicEventController {
         List<Long> eventIds = events.stream()
                 .map(Event::getId)
                 .toList();
-        List<RecommendedEventProto> rating = statServerFaign.getInteractionsCount(eventIds);
+        List<RecommendedEventDto> rating = statServerFaign.getInteractionsCount(eventIds);
         Map<Long, Double> ratingForEventMap = new HashMap<>();
         rating.forEach(recommendedEventProto -> {
                     ratingForEventMap.putIfAbsent((long) recommendedEventProto.getEventId(), recommendedEventProto.getScore());
@@ -88,7 +89,7 @@ public class PublicEventController {
         Long confirmedRequests = publicEventService.getConfirmedRequestsCount(id);
         UserShortDto initiator = publicEventService.getEventInitiator(event);
 
-        List<RecommendedEventProto> rating = statServerFaign.getInteractionsCount(List.of(event.getId()));
+        List<RecommendedEventDto> rating = statServerFaign.getInteractionsCount(List.of(event.getId()));
 
         statServerFaign.saveStat(userId, event.getId(), ActionTypeProto.ACTION_VIEW);
 
@@ -104,7 +105,7 @@ public class PublicEventController {
         Long confirmedRequests = publicEventService.getConfirmedRequestsCount(id);
         UserShortDto initiator = publicEventService.getEventInitiator(event);
 
-        List<RecommendedEventProto> rating = statServerFaign.getInteractionsCount(List.of(event.getId()));
+        List<RecommendedEventDto> rating = statServerFaign.getInteractionsCount(List.of(event.getId()));
 
         return EventMapper.toFullDto(event, confirmedRequests, rating.getFirst().getScore(), initiator);
     }
@@ -112,7 +113,7 @@ public class PublicEventController {
     @GetMapping("/recommendations")
     public List<EventFullDto> getRecommendationForUser(@RequestHeader("X-EWM-USER-ID") long userId) {
         log.info("GET /events//recommendations - получение списка рекомендованные мероприятий для пользователя с id: {}", userId);
-        List<RecommendedEventProto> recommendationList = statServerFaign.getRecommendationsForUser(userId, 20);
+        List<RecommendedEventDto> recommendationList = statServerFaign.getRecommendationsForUser(userId, 20);
         Map<Long, Double> recommendationMap = new HashMap<>();
         recommendationList.forEach(recommendedEventProto -> {
             recommendationMap.putIfAbsent((long) recommendedEventProto.getEventId(), recommendedEventProto.getScore());

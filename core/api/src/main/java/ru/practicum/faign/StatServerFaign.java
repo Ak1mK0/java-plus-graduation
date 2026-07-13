@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import ru.practicum.dto.statServerDto.RecommendedEventDto;
 import stats.service.collector.ActionTypeProto;
 import stats.service.dashboard.RecommendedEventProto;
 
@@ -19,14 +20,14 @@ public interface StatServerFaign {
                   @RequestParam ActionTypeProto action);
 
     @GetMapping("/api/recommendations")
-    List<RecommendedEventProto> getRecommendationsForUser(@RequestParam long userId,
-                                                          @RequestParam int maxResults);
+    List<RecommendedEventDto> getRecommendationsForUser(@RequestParam long userId,
+                                                        @RequestParam int maxResults);
 
     @GetMapping("/api/similar")
-    List<RecommendedEventProto> getSimilarEvents(@RequestParam long eventId,
+    List<RecommendedEventDto> getSimilarEvents(@RequestParam long eventId,
                                                  @RequestParam long userId,
                                                  @RequestParam int maxResults);
 
     @PostMapping("/api/interactions")
-    List<RecommendedEventProto> getInteractionsCount(@RequestBody List<Long> eventIds);
+    List<RecommendedEventDto> getInteractionsCount(@RequestBody List<Long> eventIds);
 }
