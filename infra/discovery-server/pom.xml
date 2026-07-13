@@ -7,6 +7,7 @@
         <groupId>ru.practicum</groupId>
         <artifactId>infra</artifactId>
         <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>discovery-server</artifactId>
@@ -18,13 +19,11 @@
     </properties>
 
     <dependencies>
-        <!-- ===== SPRING CLOUD ===== -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
         </dependency>
 
-        <!-- ===== MONITORING ===== -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
