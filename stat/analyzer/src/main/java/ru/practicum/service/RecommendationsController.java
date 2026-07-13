@@ -11,10 +11,7 @@ import ru.practicum.repository.EventSimilarityRepository;
 import ru.practicum.repository.UserActionRepository;
 import stats.service.dashboard.*;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @GrpcService
@@ -184,25 +181,42 @@ public class RecommendationsController extends RecommendationControllerGrpc.Reco
     @Override
     public void getInteractionsCount(InteractionsCountRequestProto request,
                                      StreamObserver<RecommendedEventProto> responseObserver) {
-        log.info("Получен запрос на получение количества взаимодействий для {} событий",
-                request.getEventIdList().size());
+        List<Integer> eventIdList = request.getEventIdList();
+        log.info("Получен запрос на получение количества взаимодействий для {} событий: {}",
+                eventIdList.size(), eventIdList);
+
         try {
-            List<Long> eventIds = request.getEventIdList().stream()
+            if (eventIdList.isEmpty()) {
+                log.info("Список eventId пуст, возвращаем пустой ответ");
+                responseObserver.onCompleted();
+                return;
+            }
+
+            List<Long> eventIds = eventIdList.stream()
                     .map(Integer::longValue)
                     .toList();
 
             List<UserAction> usersActions = userActionRepository.findAllByEventIdIn(eventIds);
+            log.info("Найдено {} действий пользователей", usersActions.size());
 
-            Map<Integer, Float> eventScore = usersActions.stream()
-                    .collect(Collectors.toMap(
-                            userAction -> Math.toIntExact(userAction.getEventId()),
-                            UserAction::getRating,
-                            Float::sum
-                    ));
+            Map<Long, Float> eventScore = new HashMap<>();
+            for (Integer eventId : eventIdList) {
+                eventScore.put(eventId.longValue(), 0.0f);
+            }
+
+            usersActions.stream()
+                    .filter(action -> action.getRating() != null)
+                    .forEach(action -> {
+                        Long eventId = action.getEventId();
+                        Float rating = action.getRating();
+                        eventScore.merge(eventId, rating, Float::sum);
+                    });
+
+            log.info("Рассчитаны оценки для {} событий: {}", eventScore.size(), eventScore);
 
             eventScore.forEach((eventId, score) -> {
                 RecommendedEventProto response = RecommendedEventProto.newBuilder()
-                        .setEventId(eventId)
+                        .setEventId(eventId.intValue())
                         .setScore(score)
                         .build();
                 responseObserver.onNext(response);
@@ -212,8 +226,13 @@ public class RecommendationsController extends RecommendationControllerGrpc.Reco
             responseObserver.onCompleted();
 
         } catch (Exception e) {
-            log.info("Ошибка при расчете количества взаимодействий для событий", e);
-            responseObserver.onError(e);
+            log.error("Ошибка при расчете количества взаимодействий для событий: {}",
+                    request.getEventIdList(), e);
+            responseObserver.onError(
+                    io.grpc.Status.INTERNAL
+                            .withDescription("Ошибка при расчете взаимодействий: " + e.getMessage())
+                            .asRuntimeException()
+            );
         }
     }
 }

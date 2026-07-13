@@ -105,8 +105,8 @@ public class PrivateRequestController {
             @PathVariable Long userId,
             @RequestParam("eventIds") List<Long> eventIds,
             @RequestParam("status") RequestStatus requestStatus) {
-        log.info("GET /users/{}/requests/allWithStatus?RequestStatus={} Event list: {}", userId, requestStatus, eventIds);
-        return requestService.getAllByEventIdInAndStatus(1L, eventIds, requestStatus).stream()
+        log.info("GET /users/{}/requests/allWithStatus/list?RequestStatus={} Event list: {}", userId, requestStatus, eventIds);
+        return requestService.getAllByEventIdInAndStatus(userId, eventIds, requestStatus).stream()
                 .map(RequestMapper::toDto)
                 .collect(Collectors.toList());
     }

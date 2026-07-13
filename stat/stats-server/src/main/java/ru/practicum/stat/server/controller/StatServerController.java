@@ -102,7 +102,7 @@ public class StatServerController {
                         .collect(Collectors.toList()))
                 .build();
         Iterator<RecommendedEventProto> iterator = client.getInteractionsCount(request);
-
+        log.info("grpc iterator: {}", iterator);
         return asStream(iterator);
     }
 
