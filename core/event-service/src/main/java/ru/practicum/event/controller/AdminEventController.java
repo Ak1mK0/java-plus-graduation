@@ -18,9 +18,12 @@ import ru.practicum.event.mapper.EventMapper;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.service.AdminEventService;
 import ru.practicum.faign.RequestServiceFeign;
+import ru.practicum.faign.StatServerFaign;
 import ru.practicum.faign.UserServiceFeign;
+import stats.service.dashboard.RecommendedEventProto;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -35,6 +38,7 @@ public class AdminEventController {
     private final AdminEventService adminEventService;
     private final UserServiceFeign userServiceFeign;
     private final RequestServiceFeign requestServiceFeign;
+    private final StatServerFaign statServerFaign;
 
     @GetMapping
     public List<EventFullDto> getEvents(@RequestParam(required = false) List<Long> users,
@@ -67,12 +71,21 @@ public class AdminEventController {
 
         Map<Long, Long> confirmedMap = getConfirmedRequestsCounts(events);
 
+        List<Long> eventIds = events.stream()
+                .map(Event::getId)
+                .toList();
+        List<RecommendedEventProto> rating = statServerFaign.getInteractionsCount(eventIds);
+        Map<Long, Double> ratingForEventMap = new HashMap<>();
+        rating.forEach(recommendedEventProto -> {
+                    ratingForEventMap.putIfAbsent((long) recommendedEventProto.getEventId(), recommendedEventProto.getScore());
+                }
+        );
+
         return events.stream()
                 .map(event -> {
                     Long confirmedRequests = confirmedMap.getOrDefault(event.getId(), 0L);
-                    Long views = adminEventService.getViewsForEvent(event);
                     UserShortDto initiator = userShortMap.get(event.getInitiatorId());
-                    return EventMapper.toFullDto(event, confirmedRequests, views, initiator);
+                    return EventMapper.toFullDto(event, confirmedRequests, ratingForEventMap.get(event.getId()), initiator);
                 })
                 .collect(Collectors.toList());
     }
@@ -88,9 +101,10 @@ public class AdminEventController {
         UserShortDto userShortDto = new UserShortDto(user.getId(), user.getName());
 
         Long confirmedRequests = getConfirmedRequestsCount(eventId);
-        Long views = adminEventService.getViewsForEvent(updatedEvent);
 
-        EventFullDto eventFullDto = EventMapper.toFullDto(updatedEvent, confirmedRequests, views, userShortDto);
+        List<RecommendedEventProto> rating = statServerFaign.getInteractionsCount(List.of(eventId));
+
+        EventFullDto eventFullDto = EventMapper.toFullDto(updatedEvent, confirmedRequests, rating.getFirst().getScore(), userShortDto);
         log.info("Результат обновления: {}", eventFullDto);
         return eventFullDto;
     }

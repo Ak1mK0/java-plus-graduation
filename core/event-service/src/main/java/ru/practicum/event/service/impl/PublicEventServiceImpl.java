@@ -18,12 +18,11 @@ import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.faign.RequestServiceFeign;
 import ru.practicum.faign.UserServiceFeign;
-import ru.practicum.stat.server.controller.StatServerController;
-import stats.service.collector.ActionTypeProto;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,7 +33,6 @@ public class PublicEventServiceImpl implements PublicEventService {
     private final EventRepository eventRepository;
     private final RequestServiceFeign requestServiceFeign;
     private final UserServiceFeign userServiceFeign;
-    private final StatServerController statServerController;
 
     @Override
     public List<Event> getPublicEvents(String text, List<Long> categories, Boolean paid,
@@ -64,7 +62,6 @@ public class PublicEventServiceImpl implements PublicEventService {
         Event event = eventRepository.findByIdAndState(eventId, EventState.PUBLISHED)
                 .orElseThrow(() -> new NotFoundException("Ивент с id:" + eventId + " не найден"));
 
-        statServerController.saveStat(userId, eventId, ActionTypeProto.ACTION_VIEW);
         return event;
     }
 
@@ -80,26 +77,6 @@ public class PublicEventServiceImpl implements PublicEventService {
     }
 
     @Override
-    public Long getViewsForEvent(Event event) {
-        if (event == null) {
-            return 0L;
-        }
-
-        LocalDateTime start = event.getPublishedOn() != null ?
-                event.getPublishedOn() :
-                event.getCreatedOn();
-
-        if (start == null) {
-            start = LocalDateTime.now().minusYears(10);
-        }
-
-        List<String> uris = List.of("/events/" + event.getId());
-        List<ViewStatsDto> stats = statsClient.getStats(start, LocalDateTime.now(), uris, true);
-
-        return stats.isEmpty() ? 0L : stats.getFirst().getHits();
-    }
-
-    @Override
     public Map<Long, Long> getConfirmedRequestsCounts(List<Long> eventIds) {
         if (eventIds == null || eventIds.isEmpty()) {
             return Map.of();
@@ -111,31 +88,6 @@ public class PublicEventServiceImpl implements PublicEventService {
                 .collect(Collectors.groupingBy(
                         request -> request.getEvent(),
                         Collectors.counting()
-                ));
-    }
-
-    @Override
-    public Map<Long, Long> getViewsForEvents(List<Event> events) {
-        if (events == null || events.isEmpty()) {
-            return Map.of();
-        }
-
-        LocalDateTime earliestStart = events.stream()
-                .map(e -> e.getPublishedOn() != null ? e.getPublishedOn() : e.getCreatedOn())
-                .min(LocalDateTime::compareTo)
-                .orElse(LocalDateTime.now().minusYears(10));
-
-        List<String> uris = events.stream()
-                .map(e -> "/events/" + e.getId())
-                .toList();
-
-        List<ViewStatsDto> stats = statsClient.getStats(earliestStart, LocalDateTime.now(), uris, false);
-
-        return stats.stream()
-                .collect(Collectors.toMap(
-                        v -> Long.parseLong(v.getUri().substring(v.getUri().lastIndexOf('/') + 1)),
-                        ViewStatsDto::getHits,
-                        (a, b) -> a
                 ));
     }
 
@@ -179,8 +131,8 @@ public class PublicEventServiceImpl implements PublicEventService {
     }
 
     @Override
-    public void putLikeForEvent(Long eventId, long userId) {
-        statServerController.saveStat(userId, eventId, ActionTypeProto.ACTION_LIKE);
+    public List<Event> findAllEventsByEventId(Set<Long> ids) {
+        return eventRepository.findAllById(ids);
     }
 
 

@@ -2,7 +2,6 @@ package ru.practicum.event.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,6 @@ import ru.practicum.event.service.AdminEventService;
 import ru.practicum.exception.ConditionsNotMetException;
 import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
-import stats.service.collector.UserActionControllerGrpc;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,8 +29,6 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
-    @GrpcClient("collector")
-    private final UserActionControllerGrpc.UserActionControllerBlockingStub userActionControl;
 
     @Override
     public List<Event> getAdminEvents(List<Long> users, List<EventState> states, List<Long> categories,
@@ -58,26 +54,6 @@ public class AdminEventServiceImpl implements AdminEventService {
         log.info("Событие {} обновлено администратором", eventId);
 
         return updatedEvent;
-    }
-
-    @Override
-    public Long getViewsForEvent(Event event) {
-        if (event == null) {
-            return 0L;
-        }
-
-        LocalDateTime start = event.getPublishedOn() != null ?
-                event.getPublishedOn() :
-                event.getCreatedOn();
-
-        if (start == null) {
-            start = LocalDateTime.now().minusYears(10);
-        }
-
-        List<String> uris = List.of("/events/" + event.getId());
-        List<ViewStatsDto> stats = statsClient.getStats(start, LocalDateTime.now(), uris, true);
-
-        return stats.isEmpty() ? 0L : stats.getFirst().getHits();
     }
 
     private Event findEventById(Long eventId) {

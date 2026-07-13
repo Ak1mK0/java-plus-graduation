@@ -8,10 +8,13 @@ import org.springframework.web.bind.annotation.*;
 import stats.service.collector.ActionTypeProto;
 import stats.service.collector.UserActionControllerGrpc;
 import stats.service.collector.UserActionProto;
-import stats.service.dashboard.RecommendationControllerGrpc;
+import stats.service.dashboard.*;
 
 import java.time.Instant;
-
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,9 +24,9 @@ public class StatServerController {
 
     @GrpcClient("analyzer")
     private final RecommendationControllerGrpc.RecommendationControllerBlockingStub client;
+
     @GrpcClient("collector")
     private final UserActionControllerGrpc.UserActionControllerBlockingStub userActionControl;
-
 
     public void saveStat(Long userId, Long eventId, ActionTypeProto action) {
         UserActionProto userAction = UserActionProto.newBuilder()
@@ -38,5 +41,73 @@ public class StatServerController {
         userActionControl.collectUserAction(userAction);
     }
 
+    @GetMapping("/api/recommendations")
+    public List<RecommendedEventProto> getRecommendationsForUserAsList(@RequestParam long userId,
+                                                                       @RequestParam int maxResults) {
+        log.info("Feign call: getRecommendationsForUser, userId={}, maxResults={}", userId, maxResults);
+        return getRecommendationsForUser(userId, maxResults)
+                .collect(Collectors.toList());
+    }
 
+    @GetMapping("/api/similar")
+    public List<RecommendedEventProto> getSimilarEventsAsList(@RequestParam long eventId,
+                                                              @RequestParam long userId,
+                                                              @RequestParam int maxResults) {
+        log.info("Feign call: getSimilarEvents, eventId={}, userId={}, maxResults={}", eventId, userId, maxResults);
+        return getSimilarEvents(eventId, userId, maxResults)
+                .collect(Collectors.toList());
+    }
+
+    @PostMapping("/api/interactions")
+    public List<RecommendedEventProto> getInteractionsCountAsList(@RequestBody List<Long> eventIds) {
+        log.info("Feign call: getInteractionsCount, eventIds={}", eventIds);
+        if (eventIds == null || eventIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return getInteractionsCount(eventIds)
+                .collect(Collectors.toList());
+    }
+
+    public Stream<RecommendedEventProto> getRecommendationsForUser(long userId, int maxResults) {
+        UserPredictionsRequestProto request = UserPredictionsRequestProto.newBuilder()
+                .setUserId(Math.toIntExact(userId))
+                .setMaxResults(maxResults)
+                .build();
+
+        Iterator<RecommendedEventProto> iterator = client.getRecommendationsForUser(request);
+        return asStream(iterator);
+    }
+
+    public Stream<RecommendedEventProto> getSimilarEvents(long eventId, long userId, int maxResults) {
+        SimilarEventsRequestProto request = SimilarEventsRequestProto.newBuilder()
+                .setUserId(Math.toIntExact(userId))
+                .setEventId(Math.toIntExact(eventId))
+                .setMaxResults(maxResults)
+                .build();
+        Iterator<RecommendedEventProto> iterator = client.getSimilarEvents(request);
+
+        return asStream(iterator);
+    }
+
+    public Stream<RecommendedEventProto> getInteractionsCount(List<Long> eventIds) {
+        if (eventIds == null || eventIds.isEmpty()) {
+            return Stream.empty();
+        }
+
+        InteractionsCountRequestProto request = InteractionsCountRequestProto.newBuilder()
+                .addAllEventId(eventIds.stream()
+                        .map(Long::intValue)
+                        .collect(Collectors.toList()))
+                .build();
+        Iterator<RecommendedEventProto> iterator = client.getInteractionsCount(request);
+
+        return asStream(iterator);
+    }
+
+    private Stream<RecommendedEventProto> asStream(Iterator<RecommendedEventProto> iterator) {
+        return StreamSupport.stream(
+                Spliterators.spliteratorUnknownSize(iterator, Spliterator.ORDERED),
+                false
+        );
+    }
 }

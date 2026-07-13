@@ -13,10 +13,12 @@ import ru.practicum.dto.requestDto.ParticipationRequestDto;
 import ru.practicum.dto.requestDto.RequestStatus;
 import ru.practicum.dto.userDto.UserDto;
 import ru.practicum.faign.EventServiceFeign;
+import ru.practicum.faign.StatServerFaign;
 import ru.practicum.faign.UserServiceFeign;
 import ru.practicum.mapper.RequestMapper;
 import ru.practicum.model.ParticipationRequest;
 import ru.practicum.service.RequestService;
+import stats.service.collector.ActionTypeProto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,6 +33,7 @@ public class PrivateRequestController {
     private final RequestService requestService;
     private final UserServiceFeign userServiceFeign;
     private final EventServiceFeign eventServiceFeign;
+    private final StatServerFaign statServer;
 
     @GetMapping
     public List<ParticipationRequestDto> getUserRequests(@PathVariable @Positive Long userId) {
@@ -53,6 +56,7 @@ public class PrivateRequestController {
         EventFullDto event = eventServiceFeign.getEventByIdWithoutHttp(eventId);
 
         ParticipationRequest pr = requestService.createRequest(userId, eventId, event, requester);
+        statServer.saveStat(userId, eventId, ActionTypeProto.ACTION_REGISTER);
         return RequestMapper.toDto(pr);
     }
 

@@ -17,8 +17,6 @@ import ru.practicum.mapper.RequestMapper;
 import ru.practicum.model.ParticipationRequest;
 import ru.practicum.repository.RequestRepository;
 import ru.practicum.service.RequestService;
-import ru.practicum.stat.server.controller.StatServerController;
-import stats.service.collector.ActionTypeProto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +29,6 @@ import java.util.stream.Collectors;
 public class RequestServiceImpl implements RequestService {
 
     private final RequestRepository requestRepository;
-    private final StatServerController statServerController;
 
     @Override
     public List<ParticipationRequest> getUserRequests(Long userId) {
@@ -73,8 +70,6 @@ public class RequestServiceImpl implements RequestService {
 
         request = requestRepository.save(request);
         log.info("Заявка создана с id: {}", request.getId());
-
-        statServerController.saveStat(userId, eventId, ActionTypeProto.ACTION_REGISTER);
 
         return request;
     }
