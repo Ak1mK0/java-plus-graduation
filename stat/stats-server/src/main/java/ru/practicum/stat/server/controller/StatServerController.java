@@ -2,44 +2,41 @@ package ru.practicum.stat.server.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
+import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.stat.dto.EndpointHitDto;
-import ru.practicum.stat.dto.ViewStatsDto;
-import ru.practicum.stat.server.service.StatServerService;
+import stats.service.collector.ActionTypeProto;
+import stats.service.collector.UserActionControllerGrpc;
+import stats.service.collector.UserActionProto;
+import stats.service.dashboard.RecommendationControllerGrpc;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.Instant;
+
 
 @RestController
 @RequiredArgsConstructor
 @Validated
 @Slf4j
 public class StatServerController {
-    private final StatServerService statServerService;
 
-    @PostMapping("/hit")
-    @ResponseStatus(HttpStatus.CREATED)
-    public EndpointHitDto saveHit(@RequestBody EndpointHitDto dto) {
-        log.debug("PostMapping /hit. dto: {}", dto);
-        return statServerService.saveHit(dto);
+    @GrpcClient("analyzer")
+    private final RecommendationControllerGrpc.RecommendationControllerBlockingStub client;
+    @GrpcClient("collector")
+    private final UserActionControllerGrpc.UserActionControllerBlockingStub userActionControl;
+
+
+    public void saveStat(Long userId, Long eventId, ActionTypeProto action) {
+        UserActionProto userAction = UserActionProto.newBuilder()
+                .setUserId(Math.toIntExact(userId))
+                .setEventId(Math.toIntExact(eventId))
+                .setActionType(action)
+                .setTimestamp(com.google.protobuf.Timestamp.newBuilder()
+                        .setSeconds(Instant.now().getEpochSecond())
+                        .setNanos(Instant.now().getNano())
+                        .build())
+                .build();
+        userActionControl.collectUserAction(userAction);
     }
 
-    @GetMapping("/stats")
-    @ResponseStatus(HttpStatus.OK)
-    public List<ViewStatsDto> getHits(@RequestParam("start")
-                                      @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-                                      LocalDateTime start,
-                                      @RequestParam("end")
-                                      @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-                                      LocalDateTime end,
-                                      @RequestParam(name = "uris", required = false)
-                                      List<String> uris,
-                                      @RequestParam(name = "unique", defaultValue = "false")
-                                      boolean unique) {
-        log.debug("GetMapping /stats. Params: start: {}, end: {}, uris: {}, unique {}", start, end, uris, unique);
-        return statServerService.getStats(start, end, uris, unique);
-    }
+
 }

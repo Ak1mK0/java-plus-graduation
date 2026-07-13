@@ -2,7 +2,6 @@ package ru.practicum.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.eventDto.EventFullDto;
@@ -18,11 +17,9 @@ import ru.practicum.mapper.RequestMapper;
 import ru.practicum.model.ParticipationRequest;
 import ru.practicum.repository.RequestRepository;
 import ru.practicum.service.RequestService;
+import ru.practicum.stat.server.controller.StatServerController;
 import stats.service.collector.ActionTypeProto;
-import stats.service.collector.UserActionControllerGrpc;
-import stats.service.collector.UserActionProto;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,8 +31,7 @@ import java.util.stream.Collectors;
 public class RequestServiceImpl implements RequestService {
 
     private final RequestRepository requestRepository;
-    @GrpcClient("collector")
-    private final UserActionControllerGrpc.UserActionControllerBlockingStub userActionControl;
+    private final StatServerController statServerController;
 
     @Override
     public List<ParticipationRequest> getUserRequests(Long userId) {
@@ -78,16 +74,7 @@ public class RequestServiceImpl implements RequestService {
         request = requestRepository.save(request);
         log.info("Заявка создана с id: {}", request.getId());
 
-        UserActionProto action = UserActionProto.newBuilder()
-                .setUserId(Math.toIntExact(userId))
-                .setEventId(Math.toIntExact(eventId))
-                .setActionType(ActionTypeProto.ACTION_VIEW)
-                .setTimestamp(com.google.protobuf.Timestamp.newBuilder()
-                        .setSeconds(Instant.now().getEpochSecond())
-                        .setNanos(Instant.now().getNano())
-                        .build())
-                .build();
-        userActionControl.collectUserAction(action);
+        statServerController.saveStat(userId, eventId, ActionTypeProto.ACTION_REGISTER);
 
         return request;
     }

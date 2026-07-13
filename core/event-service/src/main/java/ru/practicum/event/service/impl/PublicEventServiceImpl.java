@@ -3,7 +3,6 @@ package ru.practicum.event.service.impl;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -19,11 +18,9 @@ import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.faign.RequestServiceFeign;
 import ru.practicum.faign.UserServiceFeign;
+import ru.practicum.stat.server.controller.StatServerController;
 import stats.service.collector.ActionTypeProto;
-import stats.service.collector.UserActionControllerGrpc;
-import stats.service.collector.UserActionProto;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -37,8 +34,7 @@ public class PublicEventServiceImpl implements PublicEventService {
     private final EventRepository eventRepository;
     private final RequestServiceFeign requestServiceFeign;
     private final UserServiceFeign userServiceFeign;
-    @GrpcClient("collector")
-    private final UserActionControllerGrpc.UserActionControllerBlockingStub userActionControl;
+    private final StatServerController statServerController;
 
     @Override
     public List<Event> getPublicEvents(String text, List<Long> categories, Boolean paid,
@@ -68,17 +64,7 @@ public class PublicEventServiceImpl implements PublicEventService {
         Event event = eventRepository.findByIdAndState(eventId, EventState.PUBLISHED)
                 .orElseThrow(() -> new NotFoundException("Ивент с id:" + eventId + " не найден"));
 
-        UserActionProto action = UserActionProto.newBuilder()
-                .setUserId((int) userId)
-                .setEventId(Math.toIntExact(event.getId()))
-                .setActionType(ActionTypeProto.ACTION_VIEW)
-                .setTimestamp(com.google.protobuf.Timestamp.newBuilder()
-                        .setSeconds(Instant.now().getEpochSecond())
-                        .setNanos(Instant.now().getNano())
-                        .build())
-                .build();
-        userActionControl.collectUserAction(action);
-
+        statServerController.saveStat(userId, eventId, ActionTypeProto.ACTION_VIEW);
         return event;
     }
 
@@ -194,16 +180,7 @@ public class PublicEventServiceImpl implements PublicEventService {
 
     @Override
     public void putLikeForEvent(Long eventId, long userId) {
-        UserActionProto action = UserActionProto.newBuilder()
-                .setUserId((int) userId)
-                .setEventId(Math.toIntExact(eventId))
-                .setActionType(ActionTypeProto.ACTION_LIKE)
-                .setTimestamp(com.google.protobuf.Timestamp.newBuilder()
-                        .setSeconds(Instant.now().getEpochSecond())
-                        .setNanos(Instant.now().getNano())
-                        .build())
-                .build();
-        userActionControl.collectUserAction(action);
+        statServerController.saveStat(userId, eventId, ActionTypeProto.ACTION_LIKE);
     }
 
 
