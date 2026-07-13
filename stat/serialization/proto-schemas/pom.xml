@@ -19,18 +19,19 @@
     </properties>
 
     <dependencies>
+        <!-- ===== GRPC ===== -->
         <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-stub</artifactId>
             <version>${grpc.version}</version>
         </dependency>
-
         <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-protobuf</artifactId>
             <version>${grpc.version}</version>
         </dependency>
 
+        <!-- ===== PROTOBUF ===== -->
         <dependency>
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
@@ -38,6 +39,7 @@
             <scope>compile</scope>
         </dependency>
 
+        <!-- ===== ANNOTATIONS ===== -->
         <dependency>
             <groupId>jakarta.annotation</groupId>
             <artifactId>jakarta.annotation-api</artifactId>
@@ -96,5 +98,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

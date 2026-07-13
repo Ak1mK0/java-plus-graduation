@@ -91,6 +91,7 @@ public class StatServerController {
     }
 
     public Stream<RecommendedEventProto> getInteractionsCount(List<Long> eventIds) {
+        log.info("grpc call: getInteractionsCount, eventIds={}", eventIds);
         if (eventIds == null || eventIds.isEmpty()) {
             return Stream.empty();
         }

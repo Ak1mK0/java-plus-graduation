@@ -19,11 +19,13 @@
     </properties>
 
     <dependencies>
+        <!-- ===== AVRO ===== -->
         <dependency>
             <groupId>org.apache.avro</groupId>
             <artifactId>avro</artifactId>
         </dependency>
 
+        <!-- ===== KAFKA ===== -->
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
@@ -77,5 +79,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

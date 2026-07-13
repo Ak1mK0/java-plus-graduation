@@ -12999,3 +12999,110 @@
 13/07/2026 - 12:21:05.633 MSK -- Отправляю gRPC-запрос на получение количества взаимодействий с мероприятием [3]
 --------------------------------
 Обнаружено 0 ошибок.
+--------------------------------
+Лог выполнения от 13/07/2026 - 13:48:56.822 MSK
+--------------------------------
+13/07/2026 - 13:48:56.845 MSK -- [Trace]: Сгенерирован следующий набор событий о действиях пользователей:
+{ user: 6, event: 14, type: ACTION_REGISTER, timestamp: 2026-07-10T10:48:56.838414Z }
+{ user: 3, event: 3, type: ACTION_REGISTER, timestamp: 2026-07-10T10:52:12.002414Z }
+{ user: 3, event: 8, type: ACTION_REGISTER, timestamp: 2026-07-10T10:54:25.377414Z }
+{ user: 6, event: 4, type: ACTION_VIEW, timestamp: 2026-07-10T10:57:03.851414Z }
+{ user: 4, event: 9, type: ACTION_REGISTER, timestamp: 2026-07-10T11:00:40.111414Z }
+{ user: 4, event: 7, type: ACTION_VIEW, timestamp: 2026-07-10T11:04:24.002414Z }
+{ user: 4, event: 9, type: ACTION_VIEW, timestamp: 2026-07-10T11:10:56.829414Z }
+{ user: 3, event: 6, type: ACTION_REGISTER, timestamp: 2026-07-10T11:13:03.197414Z }
+{ user: 1, event: 9, type: ACTION_REGISTER, timestamp: 2026-07-10T11:23:03.069414Z }
+{ user: 4, event: 8, type: ACTION_REGISTER, timestamp: 2026-07-10T11:29:19.463414Z }
+{ user: 3, event: 12, type: ACTION_VIEW, timestamp: 2026-07-10T11:38:40.255414Z }
+{ user: 2, event: 5, type: ACTION_VIEW, timestamp: 2026-07-10T11:40:14.028414Z }
+{ user: 1, event: 7, type: ACTION_VIEW, timestamp: 2026-07-10T11:42:47.828414Z }
+{ user: 1, event: 8, type: ACTION_REGISTER, timestamp: 2026-07-10T11:47:34.094414Z }
+{ user: 2, event: 4, type: ACTION_VIEW, timestamp: 2026-07-10T11:49:07.902414Z }
+{ user: 3, event: 8, type: ACTION_LIKE, timestamp: 2026-07-10T11:56:04.991414Z }
+{ user: 5, event: 1, type: ACTION_VIEW, timestamp: 2026-07-10T12:01:29.698414Z }
+{ user: 6, event: 14, type: ACTION_VIEW, timestamp: 2026-07-10T12:05:33.454414Z }
+{ user: 6, event: 2, type: ACTION_VIEW, timestamp: 2026-07-10T12:13:01.719414Z }
+{ user: 5, event: 9, type: ACTION_REGISTER, timestamp: 2026-07-10T12:20:59.199414Z }
+{ user: 1, event: 9, type: ACTION_VIEW, timestamp: 2026-07-10T12:26:36.372414Z }
+{ user: 1, event: 3, type: ACTION_REGISTER, timestamp: 2026-07-10T12:30:16.171414Z }
+{ user: 3, event: 12, type: ACTION_REGISTER, timestamp: 2026-07-10T12:33:21.690414Z }
+{ user: 6, event: 10, type: ACTION_REGISTER, timestamp: 2026-07-10T12:41:08.349414Z }
+{ user: 1, event: 4, type: ACTION_REGISTER, timestamp: 2026-07-10T12:46:09.814414Z }
+{ user: 3, event: 5, type: ACTION_REGISTER, timestamp: 2026-07-10T12:53:09.862414Z }
+{ user: 2, event: 4, type: ACTION_VIEW, timestamp: 2026-07-10T12:59:18.008414Z }
+{ user: 2, event: 12, type: ACTION_VIEW, timestamp: 2026-07-10T13:01:10.660414Z }
+{ user: 1, event: 7, type: ACTION_VIEW, timestamp: 2026-07-10T13:05:58.898414Z }
+{ user: 6, event: 5, type: ACTION_REGISTER, timestamp: 2026-07-10T13:09:30.239414Z }
+{ user: 4, event: 13, type: ACTION_REGISTER, timestamp: 2026-07-10T13:14:27.393414Z }
+{ user: 5, event: 7, type: ACTION_VIEW, timestamp: 2026-07-10T13:21:41.633414Z }
+{ user: 4, event: 10, type: ACTION_REGISTER, timestamp: 2026-07-10T13:22:50.870414Z }
+{ user: 4, event: 12, type: ACTION_REGISTER, timestamp: 2026-07-10T13:26:26.635414Z }
+{ user: 3, event: 2, type: ACTION_REGISTER, timestamp: 2026-07-10T13:27:29.855414Z }
+{ user: 4, event: 1, type: ACTION_VIEW, timestamp: 2026-07-10T13:36:23.506414Z }
+{ user: 5, event: 7, type: ACTION_VIEW, timestamp: 2026-07-10T13:42:39.080414Z }
+{ user: 3, event: 7, type: ACTION_REGISTER, timestamp: 2026-07-10T13:51:58.259414Z }
+{ user: 6, event: 13, type: ACTION_VIEW, timestamp: 2026-07-10T13:54:18.071414Z }
+{ user: 5, event: 4, type: ACTION_VIEW, timestamp: 2026-07-10T13:57:16.655414Z }
+{ user: 6, event: 8, type: ACTION_VIEW, timestamp: 2026-07-10T14:05:30.762414Z }
+{ user: 5, event: 8, type: ACTION_REGISTER, timestamp: 2026-07-10T14:06:57.527414Z }
+{ user: 3, event: 4, type: ACTION_REGISTER, timestamp: 2026-07-10T14:10:15.136414Z }
+{ user: 5, event: 12, type: ACTION_VIEW, timestamp: 2026-07-10T14:12:45.298414Z }
+{ user: 2, event: 2, type: ACTION_REGISTER, timestamp: 2026-07-10T14:19:11.276414Z }
+{ user: 2, event: 14, type: ACTION_REGISTER, timestamp: 2026-07-10T14:20:45.547414Z }
+{ user: 6, event: 11, type: ACTION_REGISTER, timestamp: 2026-07-10T14:28:24.547414Z }
+{ user: 1, event: 8, type: ACTION_VIEW, timestamp: 2026-07-10T14:36:58.112414Z }
+{ user: 4, event: 12, type: ACTION_VIEW, timestamp: 2026-07-10T14:38:52.044414Z }
+{ user: 6, event: 7, type: ACTION_VIEW, timestamp: 2026-07-10T14:40:31.301414Z }
+{ user: 5, event: 6, type: ACTION_VIEW, timestamp: 2026-07-10T14:48:26.241414Z }
+{ user: 4, event: 5, type: ACTION_VIEW, timestamp: 2026-07-10T14:53:54.302414Z }
+{ user: 1, event: 7, type: ACTION_REGISTER, timestamp: 2026-07-10T14:57:13.772414Z }
+{ user: 5, event: 8, type: ACTION_LIKE, timestamp: 2026-07-10T15:04:57.722414Z }
+{ user: 1, event: 4, type: ACTION_VIEW, timestamp: 2026-07-10T15:13:34.898414Z }
+{ user: 6, event: 14, type: ACTION_LIKE, timestamp: 2026-07-10T15:22:03.877414Z }
+{ user: 4, event: 2, type: ACTION_REGISTER, timestamp: 2026-07-10T15:23:52.909414Z }
+{ user: 4, event: 3, type: ACTION_VIEW, timestamp: 2026-07-10T15:30:01.649414Z }
+{ user: 5, event: 10, type: ACTION_REGISTER, timestamp: 2026-07-10T15:37:46.225414Z }
+{ user: 3, event: 4, type: ACTION_VIEW, timestamp: 2026-07-10T15:41:58.982414Z }
+{ user: 2, event: 2, type: ACTION_LIKE, timestamp: 2026-07-10T15:44:07.592414Z }
+{ user: 1, event: 2, type: ACTION_VIEW, timestamp: 2026-07-10T15:53:56.578414Z }
+{ user: 6, event: 9, type: ACTION_VIEW, timestamp: 2026-07-10T16:03:00.871414Z }
+{ user: 3, event: 13, type: ACTION_VIEW, timestamp: 2026-07-10T16:10:46.311414Z }
+{ user: 1, event: 2, type: ACTION_VIEW, timestamp: 2026-07-10T16:17:34.727414Z }
+{ user: 3, event: 2, type: ACTION_VIEW, timestamp: 2026-07-10T16:26:21.297414Z }
+{ user: 3, event: 1, type: ACTION_VIEW, timestamp: 2026-07-10T16:33:03.302414Z }
+{ user: 3, event: 6, type: ACTION_VIEW, timestamp: 2026-07-10T16:39:40.380414Z }
+{ user: 2, event: 11, type: ACTION_VIEW, timestamp: 2026-07-10T16:47:13.790414Z }
+{ user: 3, event: 3, type: ACTION_LIKE, timestamp: 2026-07-10T16:55:54.889414Z }
+{ user: 2, event: 12, type: ACTION_REGISTER, timestamp: 2026-07-10T17:02:26.772414Z }
+{ user: 5, event: 3, type: ACTION_REGISTER, timestamp: 2026-07-10T17:05:35.422414Z }
+{ user: 4, event: 11, type: ACTION_VIEW, timestamp: 2026-07-10T17:08:21.133414Z }
+{ user: 6, event: 12, type: ACTION_REGISTER, timestamp: 2026-07-10T17:14:45.466414Z }
+{ user: 2, event: 10, type: ACTION_REGISTER, timestamp: 2026-07-10T17:24:23.662414Z }
+{ user: 4, event: 4, type: ACTION_REGISTER, timestamp: 2026-07-10T17:30:35.457414Z }
+{ user: 2, event: 10, type: ACTION_VIEW, timestamp: 2026-07-10T17:33:19.609414Z }
+{ user: 3, event: 8, type: ACTION_VIEW, timestamp: 2026-07-10T17:42:57.104414Z }
+{ user: 4, event: 1, type: ACTION_REGISTER, timestamp: 2026-07-10T17:46:47.787414Z }
+{ user: 1, event: 3, type: ACTION_LIKE, timestamp: 2026-07-10T17:56:00.406414Z }
+{ user: 6, event: 10, type: ACTION_LIKE, timestamp: 2026-07-10T18:03:04.566414Z }
+{ user: 4, event: 14, type: ACTION_VIEW, timestamp: 2026-07-10T18:06:37.337414Z }
+{ user: 2, event: 9, type: ACTION_VIEW, timestamp: 2026-07-10T18:11:28.902414Z }
+{ user: 3, event: 12, type: ACTION_LIKE, timestamp: 2026-07-10T18:12:34.431414Z }
+{ user: 2, event: 3, type: ACTION_VIEW, timestamp: 2026-07-10T18:18:02.282414Z }
+13/07/2026 - 13:48:56.856 MSK -- Начинаю тестирование. Сгенерировано 85 событий
+13/07/2026 - 13:48:56.856 MSK -- Начинаю верификацию сервиса Collector
+13/07/2026 - 13:48:56.856 MSK -- Отправляю событие о действии пользователя: { user: 6, event: 14, type: ACTION_REGISTER, timestamp: 2026-07-10T10:48:56.838414Z }
+13/07/2026 - 13:48:59.125 MSK -- [Trace]: Событие отправлено: { user: 6, event: 14, type: ACTION_REGISTER, timestamp: 2026-07-10T10:48:56.838414Z }
+13/07/2026 - 13:48:59.125 MSK -- Ожидаю 10 секунд получения события { user: 6, event: 14, type: ACTION_REGISTER, timestamp: 2026-07-10T10:48:56.838414Z } из топика stats.user-actions.v1
+13/07/2026 - 13:48:59.796 MSK -- [Trace]: Начинаю верификацию полученного события: { user: 6, event: 14, type: REGISTER, timestamp: 2026-07-10T10:48:56.838Z }
+13/07/2026 - 13:48:59.797 MSK -- Событие REGISTER пользователя 6 с мероприятием 14 - проверено
+--------------------------------
+13/07/2026 - 13:48:59.800 MSK -- Начинаю верификацию сервиса Aggregator. Рассчитываю обновления коэффициента схожести с другими мероприятиями
+13/07/2026 - 13:48:59.800 MSK -- [Trace]: Тестер: это первое взаимодействие с мероприятием [14]. Рассчитываем коэффициенты схожести с другими мероприятиями.
+13/07/2026 - 13:48:59.803 MSK -- Для данного действия обновления коэффициента схожести не требуется
+--------------------------------
+13/07/2026 - 13:49:00.808 MSK -- Начинаю верификацию сервиса Analyzer
+--------------------------------
+--------------------------------
+13/07/2026 - 13:49:00.826 MSK -- Отправляю gRPC-запрос на получение количества взаимодействий с мероприятием [14]
+--------------------------------
+Обнаружено 0 ошибок.
