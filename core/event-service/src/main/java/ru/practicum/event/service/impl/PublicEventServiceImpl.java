@@ -61,16 +61,14 @@ public class PublicEventServiceImpl implements PublicEventService {
     }
 
     @Override
-    public Event getPublicEventById(Long eventId, HttpServletRequest request) {
+    public Event getPublicEventById(Long eventId, long userId) {
         log.info("Публичное получение события {}", eventId);
 
         Event event = eventRepository.findByIdAndState(eventId, EventState.PUBLISHED)
                 .orElseThrow(() -> new NotFoundException("Ивент с id:" + eventId + " не найден"));
 
-        String userIdHeader = request.getHeader("X-EWM-USER-ID");
-        int userId = Integer.parseInt(userIdHeader);
         UserActionProto action = UserActionProto.newBuilder()
-                .setUserId(Math.toIntExact(userId))
+                .setUserId((int) userId)
                 .setEventId(Math.toIntExact(event.getId()))
                 .setActionType(ActionTypeProto.ACTION_VIEW)
                 .setTimestamp(com.google.protobuf.Timestamp.newBuilder()
@@ -193,6 +191,20 @@ public class PublicEventServiceImpl implements PublicEventService {
         }
     }
 
+    @Override
+    public void putLikeForEvent(Long eventId, long userId) {
+        UserActionProto action = UserActionProto.newBuilder()
+                .setUserId((int) userId)
+                .setEventId(Math.toIntExact(eventId))
+                .setActionType(ActionTypeProto.ACTION_LIKE)
+                .setTimestamp(com.google.protobuf.Timestamp.newBuilder()
+                        .setSeconds(Instant.now().getEpochSecond())
+                        .setNanos(Instant.now().getNano())
+                        .build())
+                .build();
+        userActionControl.collectUserAction(action);
+    }
+
 
     private void validateDateRange(LocalDateTime rangeStart, LocalDateTime rangeEnd) {
         if (rangeStart == null) {
@@ -243,10 +255,5 @@ public class PublicEventServiceImpl implements PublicEventService {
         }
 
         return event;
-    }
-
-    private void saveHit(HttpServletRequest request) {
-
-
     }
 }

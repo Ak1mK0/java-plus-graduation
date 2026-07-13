@@ -15,7 +15,7 @@ public interface PublicEventService {
                                 Boolean onlyAvailable, String sort, int from, int size,
                                 HttpServletRequest request);
 
-    Event getPublicEventById(Long eventId, HttpServletRequest request);
+    Event getPublicEventById(Long eventId, long userId);
 
     Event getPublicEventByIdWithoutHttp(Long eventId);
 
@@ -30,4 +30,6 @@ public interface PublicEventService {
     UserShortDto getEventInitiator(Event event);
 
     Map<Long, UserShortDto> getEventInitiators(List<Event> events);
+
+    void putLikeForEvent(Long eventId, long userId);
 }

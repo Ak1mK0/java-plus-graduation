@@ -68,10 +68,10 @@ public class PublicEventController {
     }
 
     @GetMapping("/{id}")
-    public EventFullDto getEventById(@PathVariable @Positive Long id, HttpServletRequest request) {
+    public EventFullDto getEventById(@PathVariable @Positive Long id, @RequestHeader("X-EWM-USER-ID") long userId) {
         log.info("GET /events/{} - получение события", id);
 
-        Event event = publicEventService.getPublicEventById(id, request);
+        Event event = publicEventService.getPublicEventById(id, userId);
 
         Long confirmedRequests = publicEventService.getConfirmedRequestsCount(id);
         Long views = publicEventService.getViewsForEvent(event);
@@ -91,5 +91,20 @@ public class PublicEventController {
         UserShortDto initiator = publicEventService.getEventInitiator(event);
 
         return EventMapper.toFullDto(event, confirmedRequests, views, initiator);
+    }
+
+    @GetMapping("/recommendations")
+    public List<EventFullDto> getRecommendationForUser(@RequestHeader("X-EWM-USER-ID") long userId) {
+        log.info("GET /events//recommendations - получение списка рекомендованные мероприятий для пользователя с id: {}", userId);
+
+
+    }
+
+    @PutMapping("/{eventId}/like")
+    public void sendLikeForEvent(@PathVariable @Positive Long eventId,
+                                 @RequestHeader("X-EWM-USER-ID") long userId) {
+        log.info("PUT /events/{eventId}/like - Поставить like мероприятию [{}] с id: {}", eventId, userId);
+
+
     }
 }
