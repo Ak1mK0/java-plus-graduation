@@ -3,6 +3,7 @@ package ru.practicum.event.service.impl;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -22,7 +23,6 @@ import stats.service.collector.ActionTypeProto;
 import stats.service.collector.UserActionControllerGrpc;
 import stats.service.collector.UserActionProto;
 
-import com.google.protobuf.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -37,6 +37,7 @@ public class PublicEventServiceImpl implements PublicEventService {
     private final EventRepository eventRepository;
     private final RequestServiceFeign requestServiceFeign;
     private final UserServiceFeign userServiceFeign;
+    @GrpcClient("collector")
     private final UserActionControllerGrpc.UserActionControllerBlockingStub userActionControl;
 
     @Override
