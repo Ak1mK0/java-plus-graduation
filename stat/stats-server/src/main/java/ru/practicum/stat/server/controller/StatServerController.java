@@ -25,7 +25,7 @@ import java.util.stream.StreamSupport;
 public class StatServerController {
 
     @GrpcClient("analyzer")
-    private RecommendationControllerGrpc.RecommendationControllerBlockingStub client;
+    private RecommendationsControllerGrpc.RecommendationsControllerBlockingStub client;
 
     @GrpcClient("collector")
     private UserActionControllerGrpc.UserActionControllerBlockingStub userActionControl;

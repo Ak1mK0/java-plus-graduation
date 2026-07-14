@@ -100,7 +100,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>ru.practicum.Analyzer</mainClass>
+                    <mainClass>stats.service.Analyzer</mainClass>
                 </configuration>
                 <executions>
                     <execution>

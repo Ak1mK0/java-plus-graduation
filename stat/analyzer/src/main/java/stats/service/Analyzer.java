@@ -1,10 +1,10 @@
-package ru.practicum;
+package stats.service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import ru.practicum.service.EventSimilarityProcessor;
-import ru.practicum.service.UserActionProcessor;
+import stats.service.service.EventSimilarityProcessor;
+import stats.service.service.UserActionProcessor;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

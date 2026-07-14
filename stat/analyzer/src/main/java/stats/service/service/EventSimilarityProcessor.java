@@ -1,4 +1,4 @@
-package ru.practicum.service;
+package stats.service.service;
 
 import deserializer.EventSimilarityDeserializer;
 import jakarta.annotation.PostConstruct;
@@ -9,11 +9,11 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.common.errors.WakeupException;
 import org.springframework.stereotype.Component;
-import ru.practicum.client.impl.KafkaClientConfigurationImpl;
 import ru.practicum.ewm.stats.avro.EventSimilarityAvro;
-import ru.practicum.mapper.EventSimilarityMapper;
-import ru.practicum.model.EventSimilarity;
-import ru.practicum.repository.EventSimilarityRepository;
+import stats.service.client.impl.KafkaClientConfigurationImpl;
+import stats.service.mapper.EventSimilarityMapper;
+import stats.service.model.EventSimilarity;
+import stats.service.repository.EventSimilarityRepository;
 
 import java.time.Duration;
 import java.util.List;

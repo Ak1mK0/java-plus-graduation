@@ -1,4 +1,4 @@
-package ru.practicum.client;
+package stats.service.client;
 
 import deserializer.BaseAvroDeserializer;
 import org.apache.avro.specific.SpecificRecordBase;

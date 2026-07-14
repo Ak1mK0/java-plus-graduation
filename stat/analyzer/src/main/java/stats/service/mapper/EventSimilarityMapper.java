@@ -1,7 +1,7 @@
-package ru.practicum.mapper;
+package stats.service.mapper;
 
 import ru.practicum.ewm.stats.avro.EventSimilarityAvro;
-import ru.practicum.model.EventSimilarity;
+import stats.service.model.EventSimilarity;
 
 public class EventSimilarityMapper {
 

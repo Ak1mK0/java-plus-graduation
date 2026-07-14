@@ -1,4 +1,4 @@
-package ru.practicum.client.impl;
+package stats.service.client.impl;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

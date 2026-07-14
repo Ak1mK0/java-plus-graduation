@@ -1,4 +1,4 @@
-package ru.practicum.client.impl;
+package stats.service.client.impl;
 
 import deserializer.BaseAvroDeserializer;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.springframework.stereotype.Component;
-import ru.practicum.client.ClientConfiguration;
+import stats.service.client.ClientConfiguration;
 
 import java.util.Properties;
 

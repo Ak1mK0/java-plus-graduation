@@ -1,4 +1,4 @@
-package ru.practicum.service;
+package stats.service.service;
 
 import deserializer.UserActionDeserializer;
 import jakarta.annotation.PostConstruct;
@@ -9,11 +9,11 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.common.errors.WakeupException;
 import org.springframework.stereotype.Component;
-import ru.practicum.client.impl.KafkaClientConfigurationImpl;
 import ru.practicum.ewm.stats.avro.UserActionAvro;
-import ru.practicum.mapper.UserActionMapper;
-import ru.practicum.model.UserAction;
-import ru.practicum.repository.UserActionRepository;
+import stats.service.client.impl.KafkaClientConfigurationImpl;
+import stats.service.mapper.UserActionMapper;
+import stats.service.model.UserAction;
+import stats.service.repository.UserActionRepository;
 
 import java.time.Duration;
 import java.util.List;

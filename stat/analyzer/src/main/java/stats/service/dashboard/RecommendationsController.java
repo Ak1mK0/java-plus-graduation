@@ -1,22 +1,21 @@
-package ru.practicum.dashboard;
+package stats.service.dashboard;
 
 import io.grpc.stub.StreamObserver;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
-import ru.practicum.model.EventSimilarity;
-import ru.practicum.model.UserAction;
-import ru.practicum.repository.EventSimilarityRepository;
-import ru.practicum.repository.UserActionRepository;
-import stats.service.dashboard.*;
+import stats.service.model.EventSimilarity;
+import stats.service.model.UserAction;
+import stats.service.repository.EventSimilarityRepository;
+import stats.service.repository.UserActionRepository;
 
 import java.util.*;
 
 @GrpcService
 @Slf4j
 @RequiredArgsConstructor
-public class RecommendationsController extends RecommendationControllerGrpc.RecommendationControllerImplBase {
+public class RecommendationsController extends RecommendationsControllerGrpc.RecommendationsControllerImplBase {
     private final EventSimilarityRepository eventSimilarityRepository;
     private final UserActionRepository userActionRepository;
 
