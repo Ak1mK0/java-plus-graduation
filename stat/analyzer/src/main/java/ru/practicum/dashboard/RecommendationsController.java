@@ -1,4 +1,4 @@
-package ru.practicum.service;
+package ru.practicum.dashboard;
 
 import io.grpc.stub.StreamObserver;
 import jakarta.annotation.PostConstruct;
@@ -12,7 +12,6 @@ import ru.practicum.repository.UserActionRepository;
 import stats.service.dashboard.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @GrpcService
 @Slf4j
@@ -23,7 +22,15 @@ public class RecommendationsController extends RecommendationControllerGrpc.Reco
 
     @PostConstruct
     public void init() {
-        log.info("RecommendationsController инициализирован и зарегистрирован как gRPC сервис");
+        log.info("=== РЕГИСТРАЦИЯ RecommendationsController ===");
+        log.info("Класс: {}", this.getClass().getName());
+        log.info("Реализованные методы:");
+        for (java.lang.reflect.Method method : this.getClass().getDeclaredMethods()) {
+            if (method.getName().startsWith("get") && method.getParameterCount() == 2) {
+                log.info("  - {}", method.getName());
+            }
+        }
+        log.info("=============================================");
     }
 
     @Override
