@@ -111,13 +111,15 @@ public class AggregationStarter {
                 continue;
             }
 
-            double deltaMin = calculateDeltaMin(oldWeight, newWeight, otherUserWeight);
+            double minValue = Math.min(newWeight, otherUserWeight);
+            double currentMinSum = getMinSum(firstKey, secondKey);
+            double updatedMinSum = currentMinSum + (minValue - Math.min(oldWeight, otherUserWeight));
 
-            if (deltaMin == 0.0) {
-                continue;
-            }
+            minWeightsSums
+                    .computeIfAbsent(firstKey, k -> new HashMap<>())
+                    .put(secondKey, updatedMinSum);
 
-            double updatedMinSum = updateMinSum(firstKey, secondKey, deltaMin);
+            log.info("Обновлена S_min для пары ({}, {}): {}", firstKey, secondKey, updatedMinSum);
             sendSimilarityEvent(firstKey, secondKey, updatedMinSum, sumFirst, sumSecond);
         }
     }
