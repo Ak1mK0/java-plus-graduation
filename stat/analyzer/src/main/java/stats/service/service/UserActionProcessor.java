@@ -51,13 +51,23 @@ public class UserActionProcessor {
 
                     if (existing.isPresent()) {
                         UserAction existingAction = existing.get();
-                        existingAction.setRating(userAction.getRating());
-                        existingAction.setTs(userAction.getTs());
-                        userActionRepository.save(existingAction);
-                        log.debug("Обновлена запись для user_id={}, event_id={}, rating={}",
-                                userAction.getUserId(),
-                                userAction.getEventId(),
-                                userAction.getRating());
+                        // Оставляем максимальный рейтинг
+                        if (userAction.getRating() > existingAction.getRating()) {
+                            existingAction.setRating(userAction.getRating());
+                            existingAction.setTs(userAction.getTs());
+                            userActionRepository.save(existingAction);
+                            log.debug("Обновлена запись для user_id={}, event_id={}, rating={} (было={})",
+                                    userAction.getUserId(),
+                                    userAction.getEventId(),
+                                    userAction.getRating(),
+                                    existingAction.getRating());
+                        } else {
+                            log.debug("Пропущено обновление для user_id={}, event_id={}, rating={} (текущий={})",
+                                    userAction.getUserId(),
+                                    userAction.getEventId(),
+                                    userAction.getRating(),
+                                    existingAction.getRating());
+                        }
                     } else {
                         userActionRepository.save(userAction);
                         log.debug("Сохранена новая запись для user_id={}, event_id={}, rating={}",
