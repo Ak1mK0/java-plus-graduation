@@ -43,6 +43,7 @@
 		<grpc-client-spring-boot-starter.version>3.1.0.RELEASE</grpc-client-spring-boot-starter.version>
 		<spring-dotenv.version>4.0.0</spring-dotenv.version>
 		<mapstruct.version>1.5.5.Final</mapstruct.version>
+		<resilience4j-spring-boot2.version>2.0.2</resilience4j-spring-boot2.version>
 
 		<!--       Plugins       -->
 		<maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>

@@ -4,6 +4,16 @@ server:
 spring:
   application:
     name: request-service
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+      client:
+        config:
+          stats-server:
+            connectTimeout: 3000
+            readTimeout: 5000
+            loggerLevel: full
   datasource:
     url: jdbc:postgresql://localhost:5460/request-service
     username: request
@@ -16,6 +26,17 @@ spring:
     properties:
       hibernate:
         format_sql: false
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      stats-server:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000
+        permittedNumberOfCallsInHalfOpenState: 5
+        registerHealthIndicator: true
+        automaticTransitionFromOpenToHalfOpenEnabled: true
 
 eureka:
   client:
@@ -36,5 +57,9 @@ management:
 logging:
   level:
     ru.practicum: DEBUG
+    ru.practicum.fallback: DEBUG
+    ru.practicum.faign: DEBUG
+    org.springframework.cloud.openfeign: DEBUG
+    feign: DEBUG
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level --- [%thread] %logger{36} : %msg%n"
