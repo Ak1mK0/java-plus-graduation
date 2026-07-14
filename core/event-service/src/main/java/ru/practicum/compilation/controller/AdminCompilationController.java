@@ -24,7 +24,6 @@ import ru.practicum.event.model.Event;
 import ru.practicum.faign.RequestServiceFeign;
 import ru.practicum.faign.StatServerFaign;
 import ru.practicum.faign.UserServiceFeign;
-import stats.service.dashboard.RecommendedEventProto;
 
 import java.util.HashMap;
 import java.util.List;
@@ -50,13 +49,17 @@ public class AdminCompilationController {
 
         Compilation compilation = adminCompilationService.createCompilation(newCompilationDto);
 
-
-        List<RecommendedEventDto> rating = statServerFaign.getInteractionsCount(newCompilationDto.getEvents());
         Map<Long, Double> ratingForEventMap = new HashMap<>();
+        List<Long> eventsIds = compilation.getEvents()
+                .stream()
+                .map(Event::getId)
+                .toList();
+        List<RecommendedEventDto> rating = statServerFaign.getInteractionsCount(eventsIds);
         rating.forEach(recommendedEventProto -> {
                     ratingForEventMap.putIfAbsent((long) recommendedEventProto.getEventId(), recommendedEventProto.getScore());
                 }
         );
+
 
         Map<Long, Long> confirmedMap = getConfirmedRequestsCounts(compilation.getEvents());
         Map<Long, UserShortDto> initiatorMap = getEventInitiators(compilation.getEvents());
@@ -78,8 +81,12 @@ public class AdminCompilationController {
 
         Compilation compilation = adminCompilationService.updateCompilation(compId, request);
 
-        List<RecommendedEventDto> rating = statServerFaign.getInteractionsCount(request.getEvents());
         Map<Long, Double> ratingForEventMap = new HashMap<>();
+        List<Long> eventsIds = compilation.getEvents()
+                .stream()
+                .map(Event::getId)
+                .toList();
+        List<RecommendedEventDto> rating = statServerFaign.getInteractionsCount(eventsIds);
         rating.forEach(recommendedEventProto -> {
                     ratingForEventMap.putIfAbsent((long) recommendedEventProto.getEventId(), recommendedEventProto.getScore());
                 }
