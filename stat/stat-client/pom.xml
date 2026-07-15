@@ -10,7 +10,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>stats-server</artifactId>
+    <artifactId>stat-client</artifactId>
 
     <dependencies>
         <!-- ===== SPRING CLOUD ===== -->
@@ -118,7 +118,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>ru.practicum.stat.server.StatServer</mainClass>
+                    <mainClass>ru.practicum.stat.client.StatClient</mainClass>
                 </configuration>
                 <executions>
                     <execution>

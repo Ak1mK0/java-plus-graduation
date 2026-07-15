@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.compilation.mapper.CompilationMapper;
 import ru.practicum.compilation.model.Compilation;
 import ru.practicum.compilation.service.PublicCompilationService;
+
 import ru.practicum.dto.compilationDto.CompilationDto;
 import ru.practicum.dto.eventDto.EventShortDto;
 import ru.practicum.dto.requestDto.ParticipationRequestDto;
@@ -18,9 +19,8 @@ import ru.practicum.dto.userDto.UserShortDto;
 import ru.practicum.event.mapper.EventMapper;
 import ru.practicum.event.model.Event;
 import ru.practicum.faign.RequestServiceFeign;
-import ru.practicum.faign.StatServerFaign;
 import ru.practicum.faign.UserServiceFeign;
-import stats.service.dashboard.RecommendedEventProto;
+import ru.practicum.controllerInterface.StatClientController;
 
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +37,7 @@ public class PublicCompilationController {
     private final PublicCompilationService publicCompilationService;
     private final UserServiceFeign userServiceFeign;
     private final RequestServiceFeign requestServiceFeign;
-    private final StatServerFaign statServerFaign;
+    private final StatClientController statClient;
 
     @GetMapping
     public List<CompilationDto> getCompilations(@RequestParam(required = false) Boolean pinned,
@@ -59,7 +59,7 @@ public class PublicCompilationController {
         List<Long> eventIds = allEvents.stream()
                 .map(Event::getId)
                 .toList();
-        List<RecommendedEventDto> rating = statServerFaign.getInteractionsCount(eventIds);
+        List<RecommendedEventDto> rating = statClient.getInteractionsCountAsList(eventIds);
         Map<Long, Double> ratingForEventMap = new HashMap<>();
         rating.forEach(recommendedEventProto -> {
                     ratingForEventMap.putIfAbsent((long) recommendedEventProto.getEventId(), recommendedEventProto.getScore());
@@ -100,7 +100,7 @@ public class PublicCompilationController {
         List<Long> eventIds = events.stream()
                 .map(Event::getId)
                 .toList();
-        List<RecommendedEventDto> rating = statServerFaign.getInteractionsCount(eventIds);
+        List<RecommendedEventDto> rating = statClient.getInteractionsCountAsList(eventIds);
         Map<Long, Double> ratingForEventMap = new HashMap<>();
         rating.forEach(recommendedEventProto -> {
                     ratingForEventMap.putIfAbsent((long) recommendedEventProto.getEventId(), recommendedEventProto.getScore());

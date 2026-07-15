@@ -1,4 +1,4 @@
-package ru.practicum.stat.server;
+package ru.practicum.stat.client;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -7,8 +7,8 @@ import ru.practicum.exception.ErrorHandler;
 
 @SpringBootApplication
 @Import({ErrorHandler.class})
-public class StatServer {
+public class StatClient {
     public static void main(String[] args) {
-        SpringApplication.run(StatServer.class, args);
+        SpringApplication.run(StatClient.class, args);
     }
 }

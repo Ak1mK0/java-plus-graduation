@@ -1,4 +1,4 @@
-package ru.practicum.stat.server.mapper;
+package ru.practicum.stat.client.mapper;
 
 import ru.practicum.dto.statServerDto.RecommendedEventDto;
 import stats.service.dashboard.RecommendedEventProto;

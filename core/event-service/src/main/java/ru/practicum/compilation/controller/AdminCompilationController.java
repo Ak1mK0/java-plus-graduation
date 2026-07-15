@@ -22,8 +22,8 @@ import ru.practicum.dto.userDto.UserShortDto;
 import ru.practicum.event.mapper.EventMapper;
 import ru.practicum.event.model.Event;
 import ru.practicum.faign.RequestServiceFeign;
-import ru.practicum.faign.StatServerFaign;
 import ru.practicum.faign.UserServiceFeign;
+import ru.practicum.controllerInterface.StatClientController;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +40,7 @@ public class AdminCompilationController {
     private final AdminCompilationService adminCompilationService;
     private final RequestServiceFeign requestServiceFeign;
     private final UserServiceFeign userServiceFeign;
-    private final StatServerFaign statServerFaign;
+    private final StatClientController statClient;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -54,7 +54,7 @@ public class AdminCompilationController {
                 .stream()
                 .map(Event::getId)
                 .toList();
-        List<RecommendedEventDto> rating = statServerFaign.getInteractionsCount(eventsIds);
+        List<RecommendedEventDto> rating = statClient.getInteractionsCountAsList(eventsIds);
         rating.forEach(recommendedEventProto -> {
                     ratingForEventMap.putIfAbsent((long) recommendedEventProto.getEventId(), recommendedEventProto.getScore());
                 }
@@ -86,7 +86,7 @@ public class AdminCompilationController {
                 .stream()
                 .map(Event::getId)
                 .toList();
-        List<RecommendedEventDto> rating = statServerFaign.getInteractionsCount(eventsIds);
+        List<RecommendedEventDto> rating = statClient.getInteractionsCountAsList(eventsIds);
         rating.forEach(recommendedEventProto -> {
                     ratingForEventMap.putIfAbsent((long) recommendedEventProto.getEventId(), recommendedEventProto.getScore());
                 }

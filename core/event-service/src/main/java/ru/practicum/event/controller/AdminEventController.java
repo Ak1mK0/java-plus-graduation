@@ -19,9 +19,8 @@ import ru.practicum.event.mapper.EventMapper;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.service.AdminEventService;
 import ru.practicum.faign.RequestServiceFeign;
-import ru.practicum.faign.StatServerFaign;
 import ru.practicum.faign.UserServiceFeign;
-import stats.service.dashboard.RecommendedEventProto;
+import ru.practicum.controllerInterface.StatClientController;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -39,7 +38,7 @@ public class AdminEventController {
     private final AdminEventService adminEventService;
     private final UserServiceFeign userServiceFeign;
     private final RequestServiceFeign requestServiceFeign;
-    private final StatServerFaign statServerFaign;
+    private final StatClientController statClient;
 
     @GetMapping
     public List<EventFullDto> getEvents(@RequestParam(required = false) List<Long> users,
@@ -75,7 +74,7 @@ public class AdminEventController {
         List<Long> eventIds = events.stream()
                 .map(Event::getId)
                 .toList();
-        List<RecommendedEventDto> rating = statServerFaign.getInteractionsCount(eventIds);
+        List<RecommendedEventDto> rating = statClient.getInteractionsCountAsList(eventIds);
         Map<Long, Double> ratingForEventMap = new HashMap<>();
         rating.forEach(recommendedEventProto -> {
                     ratingForEventMap.putIfAbsent((long) recommendedEventProto.getEventId(), recommendedEventProto.getScore());
@@ -103,7 +102,7 @@ public class AdminEventController {
 
         Long confirmedRequests = getConfirmedRequestsCount(eventId);
         log.info("confirmedRequests: {}", confirmedRequests);
-        List<RecommendedEventDto> rating = statServerFaign.getInteractionsCount(List.of(eventId));
+        List<RecommendedEventDto> rating = statClient.getInteractionsCountAsList(List.of(eventId));
         log.info("List<RecommendedEventDto>: {}", rating);
         EventFullDto eventFullDto = EventMapper.toFullDto(updatedEvent, confirmedRequests, rating.getFirst().getScore(), userShortDto);
         log.info("Результат обновления: {}", eventFullDto);

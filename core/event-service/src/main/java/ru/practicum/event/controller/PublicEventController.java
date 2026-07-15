@@ -14,9 +14,8 @@ import ru.practicum.dto.userDto.UserShortDto;
 import ru.practicum.event.mapper.EventMapper;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.service.PublicEventService;
-import ru.practicum.faign.StatServerFaign;
+import ru.practicum.controllerInterface.StatClientController;
 import stats.service.collector.ActionTypeProto;
-import stats.service.dashboard.RecommendedEventProto;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -32,7 +31,7 @@ import java.util.stream.Collectors;
 public class PublicEventController {
 
     private final PublicEventService publicEventService;
-    private final StatServerFaign statServerFaign;
+    private final StatClientController statClient;
 
     @GetMapping
     public List<EventShortDto> getEvents(@RequestParam(required = false) String text,
@@ -63,7 +62,7 @@ public class PublicEventController {
         List<Long> eventIds = events.stream()
                 .map(Event::getId)
                 .toList();
-        List<RecommendedEventDto> rating = statServerFaign.getInteractionsCount(eventIds);
+        List<RecommendedEventDto> rating = statClient.getInteractionsCountAsList(eventIds);
         Map<Long, Double> ratingForEventMap = new HashMap<>();
         rating.forEach(recommendedEventProto -> {
                     ratingForEventMap.putIfAbsent((long) recommendedEventProto.getEventId(), recommendedEventProto.getScore());
@@ -89,9 +88,9 @@ public class PublicEventController {
         Long confirmedRequests = publicEventService.getConfirmedRequestsCount(id);
         UserShortDto initiator = publicEventService.getEventInitiator(event);
 
-        List<RecommendedEventDto> rating = statServerFaign.getInteractionsCount(List.of(event.getId()));
+        List<RecommendedEventDto> rating = statClient.getInteractionsCountAsList(List.of(event.getId()));
 
-        statServerFaign.saveStat(userId, event.getId(), ActionTypeProto.ACTION_VIEW);
+        statClient.saveStat(userId, event.getId(), ActionTypeProto.ACTION_VIEW);
 
         return EventMapper.toFullDto(event, confirmedRequests, rating.getFirst().getScore(), initiator);
     }
@@ -105,7 +104,7 @@ public class PublicEventController {
         Long confirmedRequests = publicEventService.getConfirmedRequestsCount(id);
         UserShortDto initiator = publicEventService.getEventInitiator(event);
 
-        List<RecommendedEventDto> rating = statServerFaign.getInteractionsCount(List.of(event.getId()));
+        List<RecommendedEventDto> rating = statClient.getInteractionsCountAsList(List.of(event.getId()));
 
         return EventMapper.toFullDto(event, confirmedRequests, rating.getFirst().getScore(), initiator);
     }
@@ -113,7 +112,7 @@ public class PublicEventController {
     @GetMapping("/recommendations")
     public List<EventFullDto> getRecommendationForUser(@RequestHeader("X-EWM-USER-ID") long userId) {
         log.info("GET /events//recommendations - получение списка рекомендованные мероприятий для пользователя с id: {}", userId);
-        List<RecommendedEventDto> recommendationList = statServerFaign.getRecommendationsForUser(userId, 20);
+        List<RecommendedEventDto> recommendationList = statClient.getRecommendationsForUserAsList(userId, 20);
         Map<Long, Double> recommendationMap = new HashMap<>();
         recommendationList.forEach(recommendedEventProto -> {
             recommendationMap.putIfAbsent((long) recommendedEventProto.getEventId(), recommendedEventProto.getScore());
@@ -139,6 +138,6 @@ public class PublicEventController {
     public void sendLikeForEvent(@PathVariable @Positive Long eventId,
                                  @RequestHeader("X-EWM-USER-ID") long userId) {
         log.info("PUT /events/{eventId}/like - Поставить like мероприятию [{}] с id: {}", eventId, userId);
-        statServerFaign.saveStat(userId, eventId, ActionTypeProto.ACTION_LIKE);
+        statClient.saveStat(userId, eventId, ActionTypeProto.ACTION_LIKE);
     }
 }

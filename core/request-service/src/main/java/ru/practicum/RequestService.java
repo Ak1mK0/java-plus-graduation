@@ -5,8 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 import ru.practicum.exception.ErrorHandler;
 
+
 @SpringBootApplication
-@Import(ErrorHandler.class)
+@Import({ErrorHandler.class})
 public class RequestService {
     public static void main(String[] args) {
         SpringApplication.run(RequestService.class, args);

@@ -22,9 +22,8 @@ import ru.practicum.event.mapper.EventMapper;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.service.PrivateEventService;
 import ru.practicum.faign.RequestServiceFeign;
-import ru.practicum.faign.StatServerFaign;
 import ru.practicum.faign.UserServiceFeign;
-import stats.service.dashboard.RecommendedEventProto;
+import ru.practicum.controllerInterface.StatClientController;
 
 import java.util.HashMap;
 import java.util.List;
@@ -41,7 +40,7 @@ public class PrivateEventController {
     private final PrivateEventService privateEventService;
     private final RequestServiceFeign requestServiceFeign;
     private final UserServiceFeign userServiceFeign;
-    private final StatServerFaign statServerFaign;
+    private final StatClientController statClient;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -76,7 +75,7 @@ public class PrivateEventController {
         List<Long> eventIds = events.stream()
                 .map(Event::getId)
                 .toList();
-        List<RecommendedEventDto> rating = statServerFaign.getInteractionsCount(eventIds);
+        List<RecommendedEventDto> rating = statClient.getInteractionsCountAsList(eventIds);
         Map<Long, Double> ratingForEventMap = new HashMap<>();
         rating.forEach(recommendedEventProto -> {
                     ratingForEventMap.putIfAbsent((long) recommendedEventProto.getEventId(), recommendedEventProto.getScore());
@@ -101,7 +100,7 @@ public class PrivateEventController {
 
         Long confirmedRequests = getConfirmedRequestsCount(eventId);
 
-        List<RecommendedEventDto> rating = statServerFaign.getInteractionsCount(List.of(eventId));
+        List<RecommendedEventDto> rating = statClient.getInteractionsCountAsList(List.of(eventId));
 
         return EventMapper.toFullDto(event, confirmedRequests, rating.getFirst().getScore(),
                 new UserShortDto(user.getId(), user.getName()));
@@ -118,7 +117,7 @@ public class PrivateEventController {
 
         Long confirmedRequests = getConfirmedRequestsCount(eventId);
 
-        List<RecommendedEventDto> rating = statServerFaign.getInteractionsCount(List.of(eventId));
+        List<RecommendedEventDto> rating = statClient.getInteractionsCountAsList(List.of(eventId));
 
         return EventMapper.toFullDto(event, confirmedRequests, rating.getFirst().getScore(),
                 new UserShortDto(user.getId(), user.getName()));

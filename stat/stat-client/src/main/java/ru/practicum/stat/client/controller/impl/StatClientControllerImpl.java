@@ -1,12 +1,15 @@
-package ru.practicum.stat.server.controller;
+package ru.practicum.stat.client.controller.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.client.inject.GrpcClient;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.practicum.dto.statServerDto.RecommendedEventDto;
-import ru.practicum.stat.server.mapper.RecommendedEventMapper;
+import ru.practicum.controllerInterface.StatClientController;
+import ru.practicum.stat.client.mapper.RecommendedEventMapper;
 import stats.service.collector.ActionTypeProto;
 import stats.service.collector.UserActionControllerGrpc;
 import stats.service.collector.UserActionProto;
@@ -18,11 +21,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-@RestController
 @RequiredArgsConstructor
 @Validated
 @Slf4j
-public class StatServerController {
+@Component
+public class StatClientControllerImpl implements StatClientController {
 
     @GrpcClient("analyzer")
     private RecommendationsControllerGrpc.RecommendationsControllerBlockingStub client;
@@ -30,7 +33,6 @@ public class StatServerController {
     @GrpcClient("collector")
     private UserActionControllerGrpc.UserActionControllerBlockingStub userActionControl;
 
-    @PostMapping("/api/save")
     public void saveStat(Long userId, Long eventId, ActionTypeProto action) {
         UserActionProto userAction = UserActionProto.newBuilder()
                 .setUserId(Math.toIntExact(userId))
@@ -44,28 +46,25 @@ public class StatServerController {
         userActionControl.collectUserAction(userAction);
     }
 
-    @GetMapping("/api/recommendations")
     public List<RecommendedEventDto> getRecommendationsForUserAsList(@RequestParam long userId,
                                                                        @RequestParam int maxResults) {
-        log.info("Feign call: getRecommendationsForUser, userId={}, maxResults={}", userId, maxResults);
+        log.info("getRecommendationsForUser, userId={}, maxResults={}", userId, maxResults);
         return getRecommendationsForUser(userId, maxResults)
                 .map(RecommendedEventMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/api/similar")
     public List<RecommendedEventDto> getSimilarEventsAsList(@RequestParam long eventId,
                                                               @RequestParam long userId,
                                                               @RequestParam int maxResults) {
-        log.info("Feign call: getSimilarEvents, eventId={}, userId={}, maxResults={}", eventId, userId, maxResults);
+        log.info("getSimilarEvents, eventId={}, userId={}, maxResults={}", eventId, userId, maxResults);
         return getSimilarEvents(eventId, userId, maxResults)
                 .map(RecommendedEventMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    @PostMapping("/api/interactions")
     public List<RecommendedEventDto> getInteractionsCountAsList(@RequestBody List<Long> eventIds) {
-        log.info("Feign call: getInteractionsCount, eventIds={}", eventIds);
+        log.info("getInteractionsCount, eventIds={}", eventIds);
         if (eventIds == null || eventIds.isEmpty()) {
             return Collections.emptyList();
         }
