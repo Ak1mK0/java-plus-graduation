@@ -19,6 +19,5 @@
         <module>analyzer</module>
         <module>collector</module>
         <module>serialization</module>
-        <module>stat-client</module>
     </modules>
 </project>
