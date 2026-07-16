@@ -7,7 +7,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.eventDto.EventState;
 import ru.practicum.dto.requestDto.RequestStatus;
 import ru.practicum.dto.userDto.UserDto;
@@ -19,13 +18,11 @@ import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.faign.RequestServiceFeign;
 import ru.practicum.faign.UserServiceFeign;
-import ru.practicum.stat.client.StatsClient;
-import ru.practicum.stat.dto.EndpointHitDto;
-import ru.practicum.stat.dto.ViewStatsDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,7 +32,6 @@ public class PublicEventServiceImpl implements PublicEventService {
 
     private final EventRepository eventRepository;
     private final RequestServiceFeign requestServiceFeign;
-    private final StatsClient statsClient;
     private final UserServiceFeign userServiceFeign;
 
     @Override
@@ -56,19 +52,15 @@ public class PublicEventServiceImpl implements PublicEventService {
             events = filterOnlyAvailable(events);
         }
 
-        List<Event> result = applySorting(events, sort);
-        saveHit(request);
-
-        return result;
+        return applySorting(events, sort);
     }
 
     @Override
-    public Event getPublicEventById(Long eventId, HttpServletRequest request) {
+    public Event getPublicEventById(Long eventId, long userId) {
         log.info("Публичное получение события {}", eventId);
 
         Event event = eventRepository.findByIdAndState(eventId, EventState.PUBLISHED)
                 .orElseThrow(() -> new NotFoundException("Ивент с id:" + eventId + " не найден"));
-        saveHit(request);
 
         return event;
     }
@@ -85,26 +77,6 @@ public class PublicEventServiceImpl implements PublicEventService {
     }
 
     @Override
-    public Long getViewsForEvent(Event event) {
-        if (event == null) {
-            return 0L;
-        }
-
-        LocalDateTime start = event.getPublishedOn() != null ?
-                event.getPublishedOn() :
-                event.getCreatedOn();
-
-        if (start == null) {
-            start = LocalDateTime.now().minusYears(10);
-        }
-
-        List<String> uris = List.of("/events/" + event.getId());
-        List<ViewStatsDto> stats = statsClient.getStats(start, LocalDateTime.now(), uris, true);
-
-        return stats.isEmpty() ? 0L : stats.getFirst().getHits();
-    }
-
-    @Override
     public Map<Long, Long> getConfirmedRequestsCounts(List<Long> eventIds) {
         if (eventIds == null || eventIds.isEmpty()) {
             return Map.of();
@@ -116,31 +88,6 @@ public class PublicEventServiceImpl implements PublicEventService {
                 .collect(Collectors.groupingBy(
                         request -> request.getEvent(),
                         Collectors.counting()
-                ));
-    }
-
-    @Override
-    public Map<Long, Long> getViewsForEvents(List<Event> events) {
-        if (events == null || events.isEmpty()) {
-            return Map.of();
-        }
-
-        LocalDateTime earliestStart = events.stream()
-                .map(e -> e.getPublishedOn() != null ? e.getPublishedOn() : e.getCreatedOn())
-                .min(LocalDateTime::compareTo)
-                .orElse(LocalDateTime.now().minusYears(10));
-
-        List<String> uris = events.stream()
-                .map(e -> "/events/" + e.getId())
-                .toList();
-
-        List<ViewStatsDto> stats = statsClient.getStats(earliestStart, LocalDateTime.now(), uris, false);
-
-        return stats.stream()
-                .collect(Collectors.toMap(
-                        v -> Long.parseLong(v.getUri().substring(v.getUri().lastIndexOf('/') + 1)),
-                        ViewStatsDto::getHits,
-                        (a, b) -> a
                 ));
     }
 
@@ -181,6 +128,11 @@ public class PublicEventServiceImpl implements PublicEventService {
             log.warn("Не удалось получить данные пользователей для событий");
             return Map.of();
         }
+    }
+
+    @Override
+    public List<Event> findAllEventsByEventId(Set<Long> ids) {
+        return eventRepository.findAllById(ids);
     }
 
 
@@ -233,15 +185,5 @@ public class PublicEventServiceImpl implements PublicEventService {
         }
 
         return event;
-    }
-
-    private void saveHit(HttpServletRequest request) {
-        EndpointHitDto hit = EndpointHitDto.builder()
-                .app("ewm-main-service")
-                .uri(request.getRequestURI())
-                .ip(request.getRemoteAddr())
-                .timestamp(LocalDateTime.now())
-                .build();
-        statsClient.hit(hit);
     }
 }
